@@ -50,7 +50,6 @@ namespace Agenda.Controllers
         public ResultRequest PostEncuesta([FromQuery] SurveyRequest surveyRequest)
         {
             ResultRequest result = new ResultRequest();
-            List<Survey> lst = new List<Survey>();
 
             try
             {
@@ -59,17 +58,15 @@ namespace Agenda.Controllers
                     Survey survey = new Survey();
                    
                     survey.ActivityId = surveyRequest.ActivityId;
-                    survey.Answers = surveyRequest.Answers;
+                    survey.Answers = surveyRequest.Answers.ToUpper();
 
                     db.Surveys.AddAsync(survey);
                     db.SaveChanges();
-
-                    lst = db.Surveys.OrderByDescending(x => x.Id).ToList();
                 }
 
                 result.Status = 201;
                 result.Message = "";
-                result.Data = lst;
+                result.Data = 1;
                 result.Parameters = JsonConvert.SerializeObject(surveyRequest); ;
                 result.Function = "SurveyController.PostEncuesta";
             }
@@ -89,7 +86,6 @@ namespace Agenda.Controllers
         public ResultRequest PutEncuesta([FromQuery] SurveyRequest surveyRequest)
         {
             ResultRequest result = new ResultRequest();
-            List<Survey> lst = new List<Survey>();
 
             try
             {
@@ -100,18 +96,16 @@ namespace Agenda.Controllers
                     if (survey != null)
                     {
                         survey.ActivityId = surveyRequest.ActivityId;
-                        survey.Answers = surveyRequest.Answers;
+                        survey.Answers = surveyRequest.Answers.ToUpper();
 
                         db.Entry(survey).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                         db.SaveChanges();
                     }
-
-                    lst = db.Surveys.OrderByDescending(x => x.Id).ToList();
                 }
 
                 result.Status = 201;
                 result.Message = "";
-                result.Data = lst;
+                result.Data = 1;
                 result.Parameters = JsonConvert.SerializeObject(surveyRequest);
                 result.Function = "SurveyController.PutEncuesta";
             }
@@ -120,7 +114,7 @@ namespace Agenda.Controllers
                 result.Status = 500;
                 result.Message = err.Message;
                 result.Data = null;
-                result.Parameters = JsonConvert.SerializeObject(surveyRequest); ;
+                result.Parameters = JsonConvert.SerializeObject(surveyRequest);
                 result.Function = "SurveyController.PutEncuesta";
             }
 
@@ -131,7 +125,6 @@ namespace Agenda.Controllers
         public ResultRequest DeleteEncuesta(int id)
         {
             ResultRequest result = new ResultRequest();
-            List<Survey> lst = new List<Survey>();
 
             try
             {
@@ -144,13 +137,11 @@ namespace Agenda.Controllers
                         db.Remove(survey);
                         db.SaveChanges();
                     }
-
-                    lst = db.Surveys.OrderByDescending(x => x.Id).ToList();
                 }
 
                 result.Status = 201;
                 result.Message = "";
-                result.Data = lst;
+                result.Data = 1;
                 result.Parameters = $"ID = {id}";
                 result.Function = "SurveyController.DeleteEncuesta";
             }

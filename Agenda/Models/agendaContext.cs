@@ -44,6 +44,11 @@ namespace Agenda.Models
                     .HasColumnName("create_at")
                     .HasDefaultValueSql("(getdate())");
 
+                entity.Property(e => e.DateActivity)
+                    .HasColumnType("date")
+                    .HasColumnName("dateActivity")
+                    .HasDefaultValueSql("(CONVERT([varchar],getdate(),(23)))");
+
                 entity.Property(e => e.PropertyId).HasColumnName("property_id");
 
                 entity.Property(e => e.Schedule)
@@ -56,6 +61,14 @@ namespace Agenda.Models
                     .IsUnicode(false)
                     .HasColumnName("status")
                     .HasDefaultValueSql("('Active')");
+
+                entity.Property(e => e.TimeBegin)
+                    .HasColumnName("timeBegin")
+                    .HasDefaultValueSql("(CONVERT([time],sysdatetime()))");
+
+                entity.Property(e => e.TimeEnd)
+                    .HasColumnName("timeEnd")
+                    .HasDefaultValueSql("(dateadd(hour,(1),getdate()))");
 
                 entity.Property(e => e.Title)
                     .IsRequired()

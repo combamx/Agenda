@@ -51,27 +51,24 @@ namespace Agenda.Controllers
         public ResultRequest PostPropiedad([FromQuery] PropertyRequest propertyRequest)
         {
             ResultRequest result = new ResultRequest();
-            List<Property> lst = new List<Property>();
 
             try
             {
                 using (agendaContext db = new agendaContext())
                 {
                     Property property = new Property();
-                    property.Title = propertyRequest.Title;
-                    property.Address = propertyRequest.Address;
-                    property.Description = propertyRequest.Description;
+                    property.Title = propertyRequest.Title.ToUpper();
+                    property.Address = propertyRequest.Address.ToUpper();
+                    property.Description = propertyRequest.Description.ToUpper();
                     property.Status = propertyRequest.Status;
 
                     db.Properties.AddAsync(property);
                     db.SaveChanges();
-
-                    lst = db.Properties.OrderByDescending(x => x.Id).ToList();
                 }
 
                 result.Status = 201;
                 result.Message = "";
-                result.Data = lst;
+                result.Data = 1;
                 result.Parameters = JsonConvert.SerializeObject(propertyRequest); ;
                 result.Function = "PropertyController.PostPropiedad";
             }
@@ -91,8 +88,7 @@ namespace Agenda.Controllers
         public ResultRequest PutPropiedad([FromQuery] PropertyRequest propertyRequest)
         {
             ResultRequest result = new ResultRequest();
-            List<Property> lst = new List<Property>();
-
+            
             try
             {
                 using (agendaContext db = new agendaContext())
@@ -101,21 +97,19 @@ namespace Agenda.Controllers
 
                     if(property != null)
                     {
-                        property.Title = propertyRequest.Title;
-                        property.Address = propertyRequest.Address;
-                        property.Description = propertyRequest.Description;
+                        property.Title = propertyRequest.Title.ToUpper();
+                        property.Address = propertyRequest.Address.ToUpper();
+                        property.Description = propertyRequest.Description.ToUpper();
                         property.Status = propertyRequest.Status;
 
                         db.Entry(property).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                         db.SaveChanges();
                     }
-
-                    lst = db.Properties.OrderByDescending(x => x.Id).ToList();
                 }
 
                 result.Status = 201;
                 result.Message = "";
-                result.Data = lst;
+                result.Data = 1;
                 result.Parameters = JsonConvert.SerializeObject(propertyRequest);
                 result.Function = "PropertyController.PutPropiedad";
             }
@@ -124,7 +118,45 @@ namespace Agenda.Controllers
                 result.Status = 500;
                 result.Message = err.Message;
                 result.Data = null;
-                result.Parameters = JsonConvert.SerializeObject(propertyRequest); ;
+                result.Parameters = JsonConvert.SerializeObject(propertyRequest);
+                result.Function = "PropertyController.PutPropiedad";
+            }
+
+            return result;
+        }
+
+        [HttpPut("PutPropiedadEstatus/{id}/{estatus}")]
+        public ResultRequest PutPropiedadEstatus(int id, string estatus)
+        {
+            ResultRequest result = new ResultRequest();
+
+            try
+            {
+                using (agendaContext db = new agendaContext())
+                {
+                    Property property = db.Properties.Find(id);
+
+                    if (property != null)
+                    {
+                        property.Status = estatus;
+
+                        db.Entry(property).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                        db.SaveChanges();
+                    }
+                }
+
+                result.Status = 201;
+                result.Message = "";
+                result.Data = 1;
+                result.Parameters = $"id={id}, estatus={estatus}";
+                result.Function = "PropertyController.PutPropiedad";
+            }
+            catch (Exception err)
+            {
+                result.Status = 500;
+                result.Message = err.Message;
+                result.Data = null;
+                result.Parameters = $"id={id}, estatus={estatus}";
                 result.Function = "PropertyController.PutPropiedad";
             }
 
@@ -135,7 +167,6 @@ namespace Agenda.Controllers
         public ResultRequest DeletePropiedad(int id)
         {
             ResultRequest result = new ResultRequest();
-            List<Property> lst = new List<Property>();
 
             try
             {
@@ -147,13 +178,11 @@ namespace Agenda.Controllers
                         db.Remove(property);
                         db.SaveChanges();
                     }
-
-                    lst = db.Properties.OrderByDescending(x => x.Id).ToList();
                 }
 
                 result.Status = 201;
                 result.Message = "";
-                result.Data = lst;
+                result.Data = 1;
                 result.Parameters = $"ID = {id}";
                 result.Function = "PropertyController.DeletePropiedad";
             }

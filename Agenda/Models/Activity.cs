@@ -16,6 +16,9 @@ namespace Agenda.Models
         public int PropertyId { get; set; }
         public DateTime Schedule { get; set; }
         public string Title { get; set; }
+        public DateTime? DateActivity { get; set; }
+        public TimeSpan? TimeBegin { get; set; }
+        public TimeSpan? TimeEnd { get; set; }
         public DateTime CreateAt { get; set; }
         public DateTime UpdateAt { get; set; }
         public string Status { get; set; }
