@@ -25,6 +25,7 @@ namespace Agenda.Controllers
             {
                 using (agendaContext db = new agendaContext())
                 {
+                    
                     lst = db.Activities.ToList();
                 }
 
