@@ -33,6 +33,7 @@ namespace Agenda.Controllers
                 result.Data = lst;
                 result.Parameters = "";
                 result.Function = "ActivityController.ListaActividad";
+
             }
             catch (Exception err)
             {

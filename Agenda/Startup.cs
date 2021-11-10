@@ -36,6 +36,8 @@ namespace Agenda
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Agenda", Version = "v1" });
             });
+
+            services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +49,8 @@ namespace Agenda
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Agenda v1"));
             }
+
+            app.UseCors("AllowAll");
 
             app.UseHttpsRedirection();
 
