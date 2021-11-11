@@ -47,8 +47,8 @@ namespace Agenda.Controllers
             return result;
         }
 
-        [HttpPost("PostActividad")]
-        public ResultRequest PostActividad([FromQuery] ActivityRequest activityRequest)
+        [HttpPost("PostActividad/{property_id}/{schedule}/{title}")]
+        public ResultRequest PostActividad(int property_id, DateTime schedule, string title)
         {
             ResultRequest result = new ResultRequest();
             
@@ -59,32 +59,35 @@ namespace Agenda.Controllers
             {
                 using (agendaContext db = new agendaContext())
                 {
-                    Property property = db.Properties.FirstOrDefault(x => x.Id == activityRequest.PropertyId);
+                    Property property = db.Properties.FirstOrDefault(x => x.Id == property_id);
 
                     if(property != null && property.Status == "Active")
                     {
-                        DateTime s1 = DateTime.Parse(activityRequest.Schedule.ToString());
+                        DateTime s1 = DateTime.Parse(schedule.ToString());
 
                         string d1 = s1.ToString("yyy-MM-dd");
-                        string s = s1.ToString("H:mm");
+                        string s = s1.ToString("HH:mm");
 
                         TimeSpan t1 = TimeSpan.Parse(s);
-                        TimeSpan t2 = t1 + TimeSpan.FromHours(1);
+                        int hora = t1.Hours + 1;
+                        int dia = t1.Days - 1;
+
+                        TimeSpan t2 = new TimeSpan(hora, t1.Minutes, 0);
 
                         var rangoFecha = (from st in db.Activities
                                           where st.DateActivity.ToString() == d1 && 
                                                 (st.TimeBegin >= t1 && st.TimeEnd <= t2) &&
-                                                st.PropertyId == activityRequest.PropertyId
+                                                st.PropertyId == property_id
                                           select st).Count();
 
                         if(rangoFecha == 0)
                         {
                             Activity activity = new Activity();
 
-                            activity.Title = activityRequest.Title.ToUpper();
-                            activity.PropertyId = activityRequest.PropertyId;
-                            activity.Schedule = activityRequest.Schedule;
-                            activity.Status = activityRequest.Status;
+                            activity.Title = title.ToUpper();
+                            activity.PropertyId = property_id;
+                            activity.Schedule = schedule;
+                            activity.Status = "Active";
                             activity.DateActivity = s1;
                             activity.TimeBegin = t1;
                             activity.TimeEnd = t2;
@@ -108,7 +111,7 @@ namespace Agenda.Controllers
                 result.Status = status;
                 result.Message = Msg;
                 result.Data = 1;
-                result.Parameters = JsonConvert.SerializeObject(activityRequest);
+                result.Parameters = $"property_id={property_id}, schedule={schedule}, title={title}";
                 result.Function = "ActivityController.PostActividad";
             }
             catch (Exception err)
@@ -116,7 +119,7 @@ namespace Agenda.Controllers
                 result.Status = 500;
                 result.Message = err.Message;
                 result.Data = null;
-                result.Parameters = JsonConvert.SerializeObject(activityRequest);
+                result.Parameters = $"property_id={property_id}, schedule={schedule}, title={title}";
                 result.Function = "ActivityController.PostActividad";
             }
 
@@ -124,7 +127,7 @@ namespace Agenda.Controllers
         }
 
         [HttpPut("PutActividad")]
-        public ResultRequest PutActividad([FromQuery] ActivityRequest activityRequest)
+        public ResultRequest PutActividad(ActivityRequest activityRequest)
         {
             ResultRequest result = new ResultRequest();
 

@@ -44,6 +44,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "data", "data\", "{12D0D3D7-
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "55491"
+		SlnRelativePath = "data\"
 	EndProjectSection
 EndProject
 Global

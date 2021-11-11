@@ -216,13 +216,13 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label class="col-form-label" for="order_id">Actividad ID</label>
-                                    <input type="text" id="order_id" name="order_id" value="" placeholder="Actividad ID" class="form-control" readonly>
+                                    <input type="text" id="agregarActividad_id" name="agregarActividad_id" value="" placeholder="Actividad ID" class="form-control" readonly>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="form-group">
                                     <label class="col-form-label" for="status">Titulo</label>
-                                    <input type="text" id="status" name="status" value="" placeholder="Titulo" class="form-control">
+                                    <input type="text" id="agregarTitulo" name="agregarTitulo" value="" placeholder="Titulo" class="form-control">
                                 </div>
                             </div>
                             <div class="col-12">
@@ -238,14 +238,14 @@
                                 <div class="form-group">
                                     <label class="col-form-label" for="date_modified">Fecha</label>
                                     <div class="input-group date">
-                                        <input id="date_modified" type="date" class="form-control" value="">
+                                        <input id="agregarFecha" name="agregarFecha" type="date" class="form-control" value="">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="form-group">
                                     <label class="col-form-label" for="amount">Hora</label>
-                                    <input type="time" id="amount" name="amount" value="" class="form-control">
+                                    <input type="time" id="agregarHora" name="agregarHora" value="" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -253,7 +253,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+                    <button type="button" class="btn btn-primary" onclick="GuardarActividad()">Aceptar</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>
@@ -373,7 +373,45 @@
         }
 
         function GuardarActividad() {
+            Objdata = {
+                property_id: $('#agregarPropiedad').val(),
+                schedule: $('#agregarFecha').val() + ' ' + $('#agregarHora').val(),
+                title: $('#agregarTitulo').val(),
+            };
 
+            $.ajax({
+                type: "POST",
+                url: "https://localhost:44303/api/Activity/PostActividad/" + Objdata.property_id + "/" + Objdata.schedule + "/" + Objdata.title,
+                data: Objdata,
+                processData: true,
+                dataType: 'json',
+                success: function (json) {
+                    console.log(json);
+                    switch (json.status) {
+                        case 400:
+                            $('#activityAgregar').modal('hide');
+                            $('#MsgBody').text(json.message);
+                            $('#sistemMsg').css('zIndex', '999').modal('show');
+                            break;
+                        default:
+                            //$('#MsgBody').text(json.message);
+                            //$('#sistemMsg').css('zIndex', 999).modal('show');
+                            break;
+                    }
+                    
+                },
+                complete: function (jqXHR, status) {
+                    console.log(jqXHR);
+                },
+                error: function (jqXHR, status, error) {
+                    console.log(jqXHR);
+                    console.log(error);
+
+                    $('#MsgBody').text(error);
+                    $('#activityAgregar').modal('hide');
+                    $('#sistemMsg').modal('show');
+                },
+            });
         }
 
         $(document).ready(function () {
