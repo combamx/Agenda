@@ -8,8 +8,11 @@ namespace Agenda.Models
 {
     public partial class agendaContext : DbContext
     {
-        public agendaContext()
+        private readonly string _connectionString;
+
+        public agendaContext(string connectionString)
         {
+            _connectionString = connectionString;
         }
 
         public agendaContext(DbContextOptions<agendaContext> options)
@@ -26,6 +29,10 @@ namespace Agenda.Models
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseSqlServer("Data Source=Localhost;Initial Catalog=agenda;Integrated Security=True");
+            }
+            else
+            {
+                optionsBuilder.UseSqlServer(_connectionString);
             }
         }
 

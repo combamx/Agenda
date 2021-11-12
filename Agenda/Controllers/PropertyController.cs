@@ -15,6 +15,13 @@ namespace Agenda.Controllers
     [ApiController]
     public class PropertyController : ControllerBase
     {
+        private readonly agendaContext _context;
+
+        public PropertyController(agendaContext context)
+        {
+            _context = context;
+        }
+
         [HttpGet("ListaPropiedades")]
         public ResultRequest ListaPropiedades()
         {
@@ -24,10 +31,7 @@ namespace Agenda.Controllers
 
             try
             {
-                using (agendaContext db = new agendaContext())
-                {
-                    lst = db.Properties.ToList();
-                }
+                lst = _context.Properties.ToList();
 
                 result.Status = 200;
                 result.Message = "";
@@ -54,17 +58,14 @@ namespace Agenda.Controllers
 
             try
             {
-                using (agendaContext db = new agendaContext())
-                {
-                    Property property = new Property();
-                    property.Title = propertyRequest.Title.ToUpper();
-                    property.Address = propertyRequest.Address.ToUpper();
-                    property.Description = propertyRequest.Description.ToUpper();
-                    property.Status = propertyRequest.Status;
+                Property property = new Property();
+                property.Title = propertyRequest.Title.ToUpper();
+                property.Address = propertyRequest.Address.ToUpper();
+                property.Description = propertyRequest.Description.ToUpper();
+                property.Status = propertyRequest.Status;
 
-                    db.Properties.AddAsync(property);
-                    db.SaveChanges();
-                }
+                _context.Properties.AddAsync(property);
+                _context.SaveChanges();
 
                 result.Status = 201;
                 result.Message = "";
@@ -91,20 +92,17 @@ namespace Agenda.Controllers
             
             try
             {
-                using (agendaContext db = new agendaContext())
+                Property property = _context.Properties.Find(propertyRequest.Id);
+
+                if (property != null)
                 {
-                    Property property = db.Properties.Find(propertyRequest.Id);
+                    property.Title = propertyRequest.Title.ToUpper();
+                    property.Address = propertyRequest.Address.ToUpper();
+                    property.Description = propertyRequest.Description.ToUpper();
+                    property.Status = propertyRequest.Status;
 
-                    if(property != null)
-                    {
-                        property.Title = propertyRequest.Title.ToUpper();
-                        property.Address = propertyRequest.Address.ToUpper();
-                        property.Description = propertyRequest.Description.ToUpper();
-                        property.Status = propertyRequest.Status;
-
-                        db.Entry(property).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-                        db.SaveChanges();
-                    }
+                    _context.Entry(property).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                    _context.SaveChanges();
                 }
 
                 result.Status = 201;
@@ -132,17 +130,14 @@ namespace Agenda.Controllers
 
             try
             {
-                using (agendaContext db = new agendaContext())
+                Property property = _context.Properties.Find(id);
+
+                if (property != null)
                 {
-                    Property property = db.Properties.Find(id);
+                    property.Status = estatus;
 
-                    if (property != null)
-                    {
-                        property.Status = estatus;
-
-                        db.Entry(property).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-                        db.SaveChanges();
-                    }
+                    _context.Entry(property).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                    _context.SaveChanges();
                 }
 
                 result.Status = 201;
@@ -170,14 +165,11 @@ namespace Agenda.Controllers
 
             try
             {
-                using (agendaContext db = new agendaContext())
+                Property property = _context.Properties.Find(id);
+                if (property != null)
                 {
-                    Property property = db.Properties.Find(id);
-                    if (property != null)
-                    {
-                        db.Remove(property);
-                        db.SaveChanges();
-                    }
+                    _context.Remove(property);
+                    _context.SaveChanges();
                 }
 
                 result.Status = 201;

@@ -10,10 +10,18 @@ using System.Threading.Tasks;
 
 namespace Agenda.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class SurveyController : ControllerBase
     {
+        private readonly agendaContext _context;
+
+        public SurveyController(agendaContext context)
+        {
+            _context = context;
+        }
+
         [HttpGet("ListaEncuesta")]
         public ResultRequest ListaEncuesta()
         {
@@ -23,10 +31,7 @@ namespace Agenda.Controllers
 
             try
             {
-                using (agendaContext db = new agendaContext())
-                {
-                    lst = db.Surveys.ToList();
-                }
+                lst = _context.Surveys.ToList();
 
                 result.Status = 200;
                 result.Message = "";
@@ -53,16 +58,13 @@ namespace Agenda.Controllers
 
             try
             {
-                using (agendaContext db = new agendaContext())
-                {
-                    Survey survey = new Survey();
-                   
-                    survey.ActivityId = surveyRequest.ActivityId;
-                    survey.Answers = surveyRequest.Answers.ToUpper();
+                Survey survey = new Survey();
 
-                    db.Surveys.AddAsync(survey);
-                    db.SaveChanges();
-                }
+                survey.ActivityId = surveyRequest.ActivityId;
+                survey.Answers = surveyRequest.Answers.ToUpper();
+
+                _context.Surveys.AddAsync(survey);
+                _context.SaveChanges();
 
                 result.Status = 201;
                 result.Message = "";
@@ -89,18 +91,15 @@ namespace Agenda.Controllers
 
             try
             {
-                using (agendaContext db = new agendaContext())
+                Survey survey = _context.Surveys.Find(surveyRequest.Id);
+
+                if (survey != null)
                 {
-                    Survey survey = db.Surveys.Find(surveyRequest.Id);
+                    survey.ActivityId = surveyRequest.ActivityId;
+                    survey.Answers = surveyRequest.Answers.ToUpper();
 
-                    if (survey != null)
-                    {
-                        survey.ActivityId = surveyRequest.ActivityId;
-                        survey.Answers = surveyRequest.Answers.ToUpper();
-
-                        db.Entry(survey).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-                        db.SaveChanges();
-                    }
+                    _context.Entry(survey).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                    _context.SaveChanges();
                 }
 
                 result.Status = 201;
@@ -128,15 +127,12 @@ namespace Agenda.Controllers
 
             try
             {
-                using (agendaContext db = new agendaContext())
+                Survey survey = _context.Surveys.Find(id);
+
+                if (survey != null)
                 {
-                    Survey survey = db.Surveys.Find(id);
-                    
-                    if (survey != null)
-                    {
-                        db.Remove(survey);
-                        db.SaveChanges();
-                    }
+                    _context.Remove(survey);
+                    _context.SaveChanges();
                 }
 
                 result.Status = 201;

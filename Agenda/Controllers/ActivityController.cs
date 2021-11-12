@@ -14,6 +14,12 @@ namespace Agenda.Controllers
     [ApiController]
     public class ActivityController : ControllerBase
     {
+        private readonly agendaContext _context;
+        public ActivityController(agendaContext context)
+        {
+            _context = context;
+        }
+
         [HttpGet("ListaActividad")]
         public ResultRequest ListaActividad()
         {
@@ -23,10 +29,7 @@ namespace Agenda.Controllers
 
             try
             {
-                using (agendaContext db = new agendaContext())
-                {
-                    lst = db.Activities.ToList();
-                }
+                lst = _context.Activities.ToList();
 
                 result.Status = 200;
                 result.Message = "";
@@ -57,55 +60,52 @@ namespace Agenda.Controllers
 
             try
             {
-                using (agendaContext db = new agendaContext())
+                Property property = _context.Properties.FirstOrDefault(x => x.Id == property_id);
+
+                if (property != null && property.Status == "Active")
                 {
-                    Property property = db.Properties.FirstOrDefault(x => x.Id == property_id);
+                    DateTime s1 = DateTime.Parse(schedule.ToString());
 
-                    if(property != null && property.Status == "Active")
+                    string d1 = s1.ToString("yyy-MM-dd");
+                    string s = s1.ToString("HH:mm");
+
+                    TimeSpan t1 = TimeSpan.Parse(s);
+                    int hora = t1.Hours + 1;
+                    int dia = t1.Days - 1;
+
+                    TimeSpan t2 = new TimeSpan(hora, t1.Minutes, 0);
+
+                    var rangoFecha = (from st in _context.Activities
+                                      where st.DateActivity.ToString() == d1 &&
+                                            (st.TimeBegin >= t1 && st.TimeEnd <= t2) &&
+                                            st.PropertyId == property_id
+                                      select st).Count();
+
+                    if (rangoFecha == 0)
                     {
-                        DateTime s1 = DateTime.Parse(schedule.ToString());
+                        Activity activity = new Activity();
 
-                        string d1 = s1.ToString("yyy-MM-dd");
-                        string s = s1.ToString("HH:mm");
+                        activity.Title = title.ToUpper();
+                        activity.PropertyId = property_id;
+                        activity.Schedule = schedule;
+                        activity.Status = "Active";
+                        activity.DateActivity = s1;
+                        activity.TimeBegin = t1;
+                        activity.TimeEnd = t2;
 
-                        TimeSpan t1 = TimeSpan.Parse(s);
-                        int hora = t1.Hours + 1;
-                        int dia = t1.Days - 1;
-
-                        TimeSpan t2 = new TimeSpan(hora, t1.Minutes, 0);
-
-                        var rangoFecha = (from st in db.Activities
-                                          where st.DateActivity.ToString() == d1 && 
-                                                (st.TimeBegin >= t1 && st.TimeEnd <= t2) &&
-                                                st.PropertyId == property_id
-                                          select st).Count();
-
-                        if(rangoFecha == 0)
-                        {
-                            Activity activity = new Activity();
-
-                            activity.Title = title.ToUpper();
-                            activity.PropertyId = property_id;
-                            activity.Schedule = schedule;
-                            activity.Status = "Active";
-                            activity.DateActivity = s1;
-                            activity.TimeBegin = t1;
-                            activity.TimeEnd = t2;
-
-                            db.Activities.AddAsync(activity);
-                            db.SaveChanges();
-                        }
-                        else
-                        {
-                            Msg = "No se puede crear actividad en la misma fecha y hora";
-                            status = 400;
-                        }
+                        _context.Activities.AddAsync(activity);
+                        _context.SaveChanges();
                     }
                     else
                     {
-                        Msg = "No se puede crear la actividad si la propiedad esta desactivada";
+                        Msg = "No se puede crear actividad en la misma fecha y hora";
                         status = 400;
                     }
+                }
+                else
+                {
+                    Msg = "No se puede crear la actividad si la propiedad esta desactivada";
+                    status = 400;
                 }
 
                 result.Status = status;
@@ -136,55 +136,52 @@ namespace Agenda.Controllers
 
             try
             {
-                using (agendaContext db = new agendaContext())
+                Property property = _context.Properties.FirstOrDefault(x => x.Id == activityRequest.PropertyId);
+
+                if (property != null && property.Status == "Active")
                 {
-                    Property property = db.Properties.FirstOrDefault(x => x.Id == activityRequest.PropertyId);
+                    DateTime s1 = DateTime.Parse(activityRequest.Schedule.ToString());
 
-                    if (property != null && property.Status == "Active")
+                    string d1 = s1.ToString("yyy-MM-dd");
+                    string s = s1.ToString("H:mm");
+
+                    TimeSpan t1 = TimeSpan.Parse(s);
+                    TimeSpan t2 = t1 + TimeSpan.FromHours(1);
+
+                    var rangoFecha = (from st in _context.Activities
+                                      where st.DateActivity.ToString() == d1 &&
+                                            (st.TimeBegin >= t1 && st.TimeEnd <= t2) &&
+                                            st.PropertyId == activityRequest.PropertyId
+                                      select st).Count();
+
+                    if (rangoFecha == 0)
                     {
-                        DateTime s1 = DateTime.Parse(activityRequest.Schedule.ToString());
+                        Activity activity = _context.Activities.Find(activityRequest.Id);
 
-                        string d1 = s1.ToString("yyy-MM-dd");
-                        string s = s1.ToString("H:mm");
-
-                        TimeSpan t1 = TimeSpan.Parse(s);
-                        TimeSpan t2 = t1 + TimeSpan.FromHours(1);
-
-                        var rangoFecha = (from st in db.Activities
-                                          where st.DateActivity.ToString() == d1 &&
-                                                (st.TimeBegin >= t1 && st.TimeEnd <= t2) &&
-                                                st.PropertyId == activityRequest.PropertyId
-                                          select st).Count();
-
-                        if (rangoFecha == 0)
+                        if (activity != null)
                         {
-                            Activity activity = db.Activities.Find(activityRequest.Id);
+                            activity.Title = activityRequest.Title.ToUpper();
+                            activity.PropertyId = activityRequest.PropertyId;
+                            activity.Schedule = activityRequest.Schedule;
+                            activity.Status = activityRequest.Status;
+                            activity.DateActivity = s1;
+                            activity.TimeBegin = t1;
+                            activity.TimeEnd = t2;
 
-                            if (activity != null)
-                            {
-                                activity.Title = activityRequest.Title.ToUpper();
-                                activity.PropertyId = activityRequest.PropertyId;
-                                activity.Schedule = activityRequest.Schedule;
-                                activity.Status = activityRequest.Status;
-                                activity.DateActivity = s1;
-                                activity.TimeBegin = t1;
-                                activity.TimeEnd = t2;
-
-                                db.Entry(activity).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-                                db.SaveChanges();
-                            }
-                        }
-                        else
-                        {
-                            Msg = "No se puede crear actividad en la misma fecha y hora";
-                            status = 400;
+                            _context.Entry(activity).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                            _context.SaveChanges();
                         }
                     }
                     else
                     {
-                        Msg = "No se puede crear la actividad si la propiedad esta desactivada";
+                        Msg = "No se puede actualizar la actividad en la misma fecha y hora";
                         status = 400;
                     }
+                }
+                else
+                {
+                    Msg = "No se puede actualizar la actividad si la propiedad esta desactivada";
+                    status = 400;
                 }
 
                 result.Status = status;
@@ -212,17 +209,14 @@ namespace Agenda.Controllers
 
             try
             {
-                using (agendaContext db = new agendaContext())
+                Activity activity = _context.Activities.Find(id);
+
+                if (activity != null)
                 {
-                    Activity activity = db.Activities.Find(id);
+                    activity.Status = estatus;
 
-                    if (activity != null)
-                    {
-                        activity.Status = estatus;
-
-                        db.Entry(activity).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-                        db.SaveChanges();
-                    }
+                    _context.Entry(activity).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                    _context.SaveChanges();
                 }
 
                 result.Status = 201;
@@ -251,15 +245,12 @@ namespace Agenda.Controllers
 
             try
             {
-                using (agendaContext db = new agendaContext())
-                {
-                    Activity activity = db.Activities.Find(id);
+                Activity activity = _context.Activities.Find(id);
 
-                    if(activity != null)
-                    {
-                        db.Remove(activity);
-                        db.SaveChanges();
-                    }
+                if (activity != null)
+                {
+                    _context.Remove(activity);
+                    _context.SaveChanges();
                 }
 
                 result.Status = 201;

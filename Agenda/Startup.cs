@@ -28,9 +28,6 @@ namespace Agenda
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string sqlConnectionString = Configuration.GetConnectionString("agenda");
-            services.AddDbContext<agendaContext>(options => options.UseSqlServer(sqlConnectionString));
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -38,6 +35,11 @@ namespace Agenda
             });
 
             services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()));
+
+            #region Se pasa la Cadena de Conexion del AppSetting al Context
+            string sqlConnectionString = Configuration.GetConnectionString("agenda");
+            services.AddScoped<agendaContext>(options => new agendaContext(sqlConnectionString));
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
