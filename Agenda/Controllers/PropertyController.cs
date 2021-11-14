@@ -31,7 +31,7 @@ namespace Agenda.Controllers
 
             try
             {
-                lst = _context.Properties.ToList();
+                lst = _context.Properties.Where(x => x.Status == "Active") .ToList();
 
                 result.Status = 200;
                 result.Message = "";
@@ -68,7 +68,7 @@ namespace Agenda.Controllers
                 _context.SaveChanges();
 
                 result.Status = 201;
-                result.Message = "";
+                result.Message = "La actividad fue agregada correctamente";
                 result.Data = 1;
                 result.Parameters = JsonConvert.SerializeObject(propertyRequest); ;
                 result.Function = "PropertyController.PostPropiedad";
@@ -105,7 +105,7 @@ namespace Agenda.Controllers
                     _context.SaveChanges();
                 }
 
-                result.Status = 201;
+                result.Status = 200;
                 result.Message = "";
                 result.Data = 1;
                 result.Parameters = JsonConvert.SerializeObject(propertyRequest);
@@ -140,7 +140,7 @@ namespace Agenda.Controllers
                     _context.SaveChanges();
                 }
 
-                result.Status = 201;
+                result.Status = 200;
                 result.Message = "";
                 result.Data = 1;
                 result.Parameters = $"id={id}, estatus={estatus}";
@@ -172,7 +172,7 @@ namespace Agenda.Controllers
                     _context.SaveChanges();
                 }
 
-                result.Status = 201;
+                result.Status = 200;
                 result.Message = "";
                 result.Data = 1;
                 result.Parameters = $"ID = {id}";

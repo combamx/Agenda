@@ -182,7 +182,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="sistemMsg" tabindex="-1" aria-labelledby="sistemMsgLabel" aria-hidden="true">
+    <div class="modal fade" id="sistemMsg" tabindex="-1" aria-labelledby="sistemMsgLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" style="z-index: 9999 !important;">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -201,11 +201,11 @@
         </div>
     </div>
 
-    <div class="modal fade" id="activityAgregar" tabindex="-1" aria-labelledby="sistemMsgLabel" aria-hidden="true">
+    <div class="modal fade" id="activityAgregar" tabindex="-1" aria-labelledby="activityAgregarLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="sistemMsgLabel">Agregar Actividad</h5>
+                    <h5 class="modal-title" id="activityAgregarLabel">Agregar Actividad</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -222,13 +222,13 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label class="col-form-label" for="status">Titulo</label>
-                                    <input type="text" id="agregarTitulo" name="agregarTitulo" value="" placeholder="Titulo" class="form-control">
+                                    <input type="text" id="agregarTitulo" name="agregarTitulo" value="" placeholder="Titulo" class="form-control" required>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="form-group">
                                     <label for="exampleFormControlSelect1">Propiedad</label>
-                                    <select class="form-control" id="agregarPropiedad">
+                                    <select class="form-control" id="agregarPropiedad" required>
                                     </select>
                                 </div>
                             </div>
@@ -238,14 +238,14 @@
                                 <div class="form-group">
                                     <label class="col-form-label" for="date_modified">Fecha</label>
                                     <div class="input-group date">
-                                        <input id="agregarFecha" name="agregarFecha" type="date" class="form-control" value="">
+                                        <input id="agregarFecha" name="agregarFecha" type="date" class="form-control" value="" required>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="form-group">
                                     <label class="col-form-label" for="amount">Hora</label>
-                                    <input type="time" id="agregarHora" name="agregarHora" value="" class="form-control">
+                                    <input type="time" id="agregarHora" name="agregarHora" value="" class="form-control" required>
                                 </div>
                             </div>
                         </div>
@@ -260,11 +260,11 @@
         </div>
     </div>
 
-    <div class="modal fade" id="activityEditar" tabindex="-1" aria-labelledby="sistemMsgLabel" aria-hidden="true">
+    <div class="modal fade" id="activityEditar" tabindex="-1" aria-labelledby="activityEditarLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="sistemMsgLabel">Editar Actividad</h5>
+                    <h5 class="modal-title" id="activityEditarLabel">Editar Actividad</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -275,19 +275,19 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label class="col-form-label" for="order_id">Actividad ID</label>
-                                    <input type="text" id="order_id" name="order_id" value="" placeholder="Actividad ID" class="form-control" readonly>
+                                    <input type="text" id="editarActividad_id" name="editarActividad_id" value="" placeholder="Actividad ID" class="form-control" readonly>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="form-group">
                                     <label class="col-form-label" for="status">Titulo</label>
-                                    <input type="text" id="status" name="status" value="" placeholder="Titulo" class="form-control">
+                                    <input type="text" id="editarTitulo" name="editarTitulo" value="" placeholder="Titulo" class="form-control" required>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="form-group">
                                     <label for="exampleFormControlSelect1">Propiedad</label>
-                                    <select class="form-control" id="editarPropiedad">
+                                    <select class="form-control" id="editarPropiedad" required>
                                     </select>
                                 </div>
                             </div>
@@ -296,34 +296,32 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label class="col-form-label" for="date_modified">Fecha</label>
-                                    <div class="input-group date">
-                                        <input id="date_modified" type="date" class="form-control" value="">
-                                    </div>
+                                    <input id="editarFecha" name="editarFecha" type="date" class="form-control" value="" required>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="form-group">
                                     <label class="col-form-label" for="amount">Hora</label>
-                                    <input type="time" id="amount" name="amount" value="" class="form-control">
+                                    <input type="time" id="editarHora" name="editarHora" value="" class="form-control" required>
                                 </div>
                             </div>
                         </div>
-        
+
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+                    <button type="button" class="btn btn-primary" onclick="GuardarActividad()">Aceptar</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="activityReagendar" tabindex="-1" aria-labelledby="sistemMsgLabel" aria-hidden="true">
+    <div class="modal fade" id="activityReagendar" tabindex="-1" data-keyboard="true" aria-labelledby="sistemReagendar" aria-hidden="true" data-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="sistemMsgLabel">Reagendar Actividad</h5>
+                    <h5 class="modal-title" id="sistemReagendar">Reagendar Actividad</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -332,7 +330,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+                    <button type="button" class="btn btn-primary">Aceptar</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>
@@ -361,44 +359,40 @@
     <!-- Page-Level Scripts -->
     <script>
         function EditarActividad(id) {
-            $("#activityEditar").modal('show');
-        }
-
-        function EliminarActividad(id) {
-            $("#activityAgregar").modal('show');
-        }
-
-        function AgregarActividad() {
-            $("#activityAgregar").modal('show');
-        }
-
-        function GuardarActividad() {
-            Objdata = {
-                property_id: $('#agregarPropiedad').val(),
-                schedule: $('#agregarFecha').val() + ' ' + $('#agregarHora').val(),
-                title: $('#agregarTitulo').val(),
-            };
+            console.log(id);
 
             $.ajax({
-                type: "POST",
-                url: "https://localhost:44303/api/Activity/PostActividad/" + Objdata.property_id + "/" + Objdata.schedule + "/" + Objdata.title,
-                data: Objdata,
-                processData: true,
+                type: "GET",
+                url: "https://localhost:44303/api/Activity/Actividad/" + id,
                 dataType: 'json',
                 success: function (json) {
                     console.log(json);
                     switch (json.status) {
                         case 400:
-                            $('#activityAgregar').modal('hide');
                             $('#MsgBody').text(json.message);
-                            $('#sistemMsg').css('zIndex', '999').modal('show');
+                            $('#sistemMsg').modal('show');
+                            break
+                        case 200:
+                        case 201:
+                            var d = new Date(json.data.dateActivity);
+                            var day = d.getDate();
+                            var month = d.getMonth() + 1;
+                            var year = d.getFullYear();
+                            var d = day + "/" + month + "/" + year;
+
+                            $('#editarActividad_id').val(json.data.id);
+                            $('#editarTitulo').val(json.data.title);
+                            $('#editarPropiedad').val(json.data.propertyId);
+                            $('#editarFecha').val(d);
+                            $('#editarHora').val(json.data.timeBegin.hours + ":" + json.data.timeBegin.minutes);
+
+                            $("#activityEditar").modal('show');
                             break;
                         default:
-                            //$('#MsgBody').text(json.message);
-                            //$('#sistemMsg').css('zIndex', 999).modal('show');
+
                             break;
                     }
-                    
+
                 },
                 complete: function (jqXHR, status) {
                     console.log(jqXHR);
@@ -414,8 +408,159 @@
             });
         }
 
-        $(document).ready(function () {
+        function EliminarActividad(id) {
+            $("#activityAgregar").modal('show');
+        }
 
+        function AgregarActividad() {
+            $("#activityAgregar").modal('show');
+        }
+
+        function GuardarActividad() {
+
+            if ($('#editarActividad_id').val() != "") {
+
+                if ($('#editarTitulo').val() == "") {
+                    $('#MsgBody').text("Falta de capturar el titulo");
+                    $('#sistemMsg').modal('show');
+                    $('#agregarTitulo').focus();
+
+                    return false;
+                }
+
+                if ($('#editarFecha').val() == "") {
+                    $('#MsgBody').text("Falta de capturar la fecha");
+                    $('#sistemMsg').modal('show');
+                    $('#agregarFecha').focus();
+
+                    return false;
+                }
+
+                if ($('#editarHora').val() == "") {
+                    $('#MsgBody').text("Falta de capturar la hora");
+                    $('#sistemMsg').modal('show');
+                    $('#agregarHora').focus();
+
+                    return false;
+                }
+
+                Objdata = {
+                    actividad_id: $("#editarActividad_id").val(),
+                    property_id: $('#editarPropiedad').val(),
+                    schedule: $('#editarFecha').val() + ' ' + $('#editarHora').val(),
+                    title: $('#editarTitulo').val(),
+                };
+
+                $.ajax({
+                    type: "post",
+                    url: "https://localhost:44303/api/Activity/PutActividad/" + Objdata.actividad_id + "/" + Objdata.property_id + "/" + Objdata.schedule + "/" + Objdata.title,
+                    data: Objdata,
+                    dataType: 'json',
+                    success: function (json) {
+                        console.log(json);
+                        switch (json.status) {
+                            case 400:
+                                $('#MsgBody').text(json.message);
+                                $('#sistemMsg').modal('show');
+                                break
+                            case 200:
+                            case 201:
+                                $('#MsgBody').text(json.message);
+                                $('#sistemMsg').modal('show');
+                                CargarDatosGrid();
+                                break;
+                            default:
+
+                                break;
+                        }
+
+                    },
+                    complete: function (jqXHR, status) {
+                        console.log(jqXHR);
+                    },
+                    error: function (jqXHR, status, error) {
+                        console.log(jqXHR);
+                        console.log(error);
+
+                        $('#MsgBody').text(error);
+                        $('#activityAgregar').modal('hide');
+                        $('#sistemMsg').modal('show');
+                    },
+                });
+            }
+            else {
+                if ($('#agregarTitulo').val() == "") {
+                    $('#MsgBody').text("Falta de capturar el titulo");
+                    $('#sistemMsg').modal('show');
+                    $('#agregarTitulo').focus();
+
+                    return false;
+                }
+
+                if ($('#agregarFecha').val() == "") {
+                    $('#MsgBody').text("Falta de capturar la fecha");
+                    $('#sistemMsg').modal('show');
+                    $('#agregarFecha').focus();
+
+                    return false;
+                }
+
+                if ($('#agregarHora').val() == "") {
+                    $('#MsgBody').text("Falta de capturar la hora");
+                    $('#sistemMsg').modal('show');
+                    $('#agregarHora').focus();
+
+                    return false;
+                }
+
+                Objdata = {
+                    property_id: $('#agregarPropiedad').val(),
+                    schedule: $('#agregarFecha').val() + ' ' + $('#agregarHora').val(),
+                    title: $('#agregarTitulo').val(),
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "https://localhost:44303/api/Activity/PostActividad/" + Objdata.property_id + "/" + Objdata.schedule + "/" + Objdata.title,
+                    data: Objdata,
+                    processData: true,
+                    dataType: 'json',
+                    success: function (json) {
+                        console.log(json);
+                        switch (json.status) {
+                            case 400:
+                                $('#MsgBody').text(json.message);
+                                $('#sistemMsg').modal('show');
+                                break
+                            case 200:
+                            case 201:
+                                $('#MsgBody').text(json.message);
+                                $('#sistemMsg').modal('show');
+                                CargarDatosGrid();
+                                break;
+                            default:
+
+                                break;
+                        }
+
+                    },
+                    complete: function (jqXHR, status) {
+                        console.log(jqXHR);
+                    },
+                    error: function (jqXHR, status, error) {
+                        console.log(jqXHR);
+                        console.log(error);
+
+                        $('#MsgBody').text(error);
+                        $('#activityAgregar').modal('hide');
+                        $('#sistemMsg').modal('show');
+                    },
+                });
+            }
+            
+        }
+
+        function CargarDatosGrid() {
             $.get("https://localhost:44303/api/Activity/ListaActividad", function (data) {
 
                 try {
@@ -432,6 +577,7 @@
                     $('.dataTables-example').DataTable({
                         pageLength: 25,
                         responsive: true,
+                        destroy: true,
                         dom: '<"html5buttons"B>lTfgitp',
                         language: {
                             "url": "https://cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
@@ -500,12 +646,14 @@
                 $("#MsgBody").text(msg);
                 $("#sistemMsg").modal('show');
             });
+        }
 
-            $.get("https://localhost:44303/api/Property/ListaPropiedades", function (data){
-                try{
+        function CargarPropiedades() {
+            $.get("https://localhost:44303/api/Property/ListaPropiedades", function (data) {
+                try {
                     $.each(data.data, function (index, value) {
-                        $("#agregarPropiedad").append("<option value=\""+value.id+"\">"+value.title+"</option>");
-                        $("#editarPropiedad").append("<option value=\""+value.id+"\">"+value.title+"</option>");
+                        $("#agregarPropiedad").append("<option value=\"" + value.id + "\">" + value.title + "</option>");
+                        $("#editarPropiedad").append("<option value=\"" + value.id + "\">" + value.title + "</option>");
                     });
                 }
                 catch (err) {
@@ -544,7 +692,11 @@
                 $("#MsgBody").text(msg);
                 $("#sistemMsg").modal('show');
             });
-        
+        }
+
+        $(document).ready(function () {
+            CargarDatosGrid();
+            CargarPropiedades();
         });
 
     </script>
