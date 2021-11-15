@@ -30,10 +30,29 @@ namespace Agenda.Controllers
             try
             {
                 lst = _context.Activities.OrderByDescending(x => x.Id).ToList();
+                List<ActivityRequest> requestsActivity = new List<ActivityRequest>();
+
+                foreach (var item in lst)
+                {
+                    ActivityRequest i = new ActivityRequest()
+                    {
+                        Id = item.Id,
+                        PropertyId = item.PropertyId,
+                        DateActivity = String.Format("{0:dd/MM/yyyy}", item.DateActivity),
+                        Schedule = item.Schedule,
+                        Status = item.Status,
+                        TimeBegin = item.TimeBegin.ToString(),
+                        TimeEnd = item.TimeEnd.ToString(),
+                        Title = item.Title,
+                        Survey = _context.Surveys.Count(x => x.ActivityId == item.Id)
+                    };
+
+                    requestsActivity.Add(i);
+                }
 
                 result.Status = 200;
                 result.Message = "";
-                result.Data = lst;
+                result.Data = requestsActivity;
                 result.Parameters = "";
                 result.Function = "ActivityController.ListaActividad";
 
@@ -55,15 +74,27 @@ namespace Agenda.Controllers
         {
             ResultRequest result = new ResultRequest();
 
-            Activity lst = new Activity();
+            Activity item = new Activity();
 
             try
             {
-                lst = _context.Activities.Where(x => x.Id == id).First();
+                item = _context.Activities.Where(x => x.Id == id).First();
+                
+                ActivityRequest i = new ActivityRequest()
+                {
+                    Id = item.Id,
+                    PropertyId = item.PropertyId,
+                    DateActivity = String.Format("{0:yyyy-MM-dd}", item.DateActivity),
+                    Schedule = item.Schedule,
+                    Status = item.Status,
+                    TimeBegin = item.TimeBegin.ToString(),
+                    TimeEnd = item.TimeEnd.ToString(),
+                    Title = item.Title
+                };
 
                 result.Status = 200;
                 result.Message = "";
-                result.Data = lst;
+                result.Data = i;
                 result.Parameters = "";
                 result.Function = "ActivityController.ListaActividad";
 
@@ -80,8 +111,8 @@ namespace Agenda.Controllers
             return result;
         }
 
-        [HttpPost("PostActividad/{property_id}/{schedule}/{title}")]
-        public ResultRequest PostActividad(int property_id, DateTime schedule, string title)
+        [HttpPost("PostActividad/{property_id}/{schedule}/{title}/{estatus}")]
+        public ResultRequest PostActividad(int property_id, DateTime schedule, string title, string estatus)
         {
             ResultRequest result = new ResultRequest();
             
@@ -118,7 +149,7 @@ namespace Agenda.Controllers
                         activity.Title = title.ToUpper();
                         activity.PropertyId = property_id;
                         activity.Schedule = schedule;
-                        activity.Status = "Active";
+                        activity.Status = estatus;
                         activity.DateActivity = s1;
                         activity.TimeBegin = t1;
                         activity.TimeEnd = t2;
@@ -158,8 +189,8 @@ namespace Agenda.Controllers
             return result;
         }
 
-        [HttpPost("PutActividad/{actividad_id}/{property_id}/{schedule}/{title}")]
-        public ResultRequest PutActividad(int actividad_id, int property_id, DateTime schedule, string title)
+        [HttpPost("PutActividad/{actividad_id}/{property_id}/{schedule}/{title}/{estatus}")]
+        public ResultRequest PutActividad(int actividad_id, int property_id, DateTime schedule, string title, string estatus)
         {
             ResultRequest result = new ResultRequest();
 
@@ -168,13 +199,15 @@ namespace Agenda.Controllers
 
             try
             {
+                Activity activity = _context.Activities.Find(actividad_id);
+
                 Property property = _context.Properties.FirstOrDefault(x => x.Id == property_id);
 
                 if (property != null && property.Status == "Active")
                 {
                     DateTime s1 = DateTime.Parse(schedule.ToString());
 
-                    string d1 = s1.ToString("yyy-MM-dd");
+                    string d1 = s1.ToString("yyyy-MM-dd");
                     string s = s1.ToString("HH:mm");
 
                     TimeSpan t1 = TimeSpan.Parse(s);
@@ -182,21 +215,23 @@ namespace Agenda.Controllers
                     int dia = t1.Days - 1;
 
                     TimeSpan t2 = new TimeSpan(hora, t1.Minutes, 0);
+                    int rangoFecha = 0;
 
-                    var rangoFecha = (from st in _context.Activities
-                                      where st.DateActivity.ToString() == d1 &&
-                                            (st.TimeBegin >= t1 && st.TimeEnd <= t2) &&
-                                            st.PropertyId == property_id
-                                      select st).Count();
+                    if (activity.TimeBegin != t1)
+                    {
+                         rangoFecha = (from st in _context.Activities
+                                          where st.DateActivity.ToString() == d1 &&
+                                                (st.TimeBegin >= t1 && st.TimeEnd <= t2) &&
+                                                st.PropertyId == property_id
+                                          select st).Count();
+                    }
 
                     if (rangoFecha == 0)
                     {
-                        Activity activity = _context.Activities.Find(actividad_id);
-
                         activity.Title = title.ToUpper();
                         activity.PropertyId = property_id;
                         activity.Schedule = schedule;
-                        activity.Status = "Active";
+                        activity.Status = estatus;
                         activity.DateActivity = s1;
                         activity.TimeBegin = t1;
                         activity.TimeEnd = t2;
@@ -236,27 +271,130 @@ namespace Agenda.Controllers
             return result;
         }
 
-        [HttpPut("PutActividadEstatus/{id}/{estatus}")]
-        public ResultRequest PutActividadEstatus(int id, string estatus)
+        [HttpPost("PutActividadEstatus/{id}/{estatus}")]
+        public ResultRequest PutActividadEstatus(int actividad_id, string estatus)
         {
             ResultRequest result = new ResultRequest();
 
+            string Msg = "";
+            int status = 200;
+
             try
             {
-                Activity activity = _context.Activities.Find(id);
+                Activity activity = _context.Activities.Find(actividad_id);
 
-                if (activity != null)
+                activity.Status = estatus;
+
+                _context.Entry(activity).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                _context.SaveChanges();
+
+                Msg = "La actividad se actualizo correctamente";
+
+                result.Status = status;
+                result.Message = Msg;
+                result.Data = 1;
+                result.Parameters = $"id={actividad_id}, estatus={estatus}";
+                result.Function = "ActivityController.PutActividadEstatus";
+            }
+            catch (Exception err)
+            {
+                result.Status = 500;
+                result.Message = err.Message;
+                result.Data = null;
+                result.Parameters = $"id={actividad_id}, estatus={estatus}";
+                result.Function = "ActivityController.PutActividadEstatus";
+            }
+
+            return result;
+        }
+
+        [HttpPost("DeleteActividad/{actividad_id}")]
+        public ResultRequest DeleteActividad(int actividad_id)
+        {
+            ResultRequest result = new ResultRequest();
+            List<Activity> lst = new List<Activity>();
+
+            string Msg = "";
+            int status = 200;
+
+            try
+            {
+                Activity activity = _context.Activities.Find(actividad_id);
+
+                _context.Remove(activity);
+                _context.SaveChanges();
+
+                Msg = "La actividad se elimino correctamente";
+
+                result.Status = status;
+                result.Message = Msg;
+                result.Data = 1;
+                result.Parameters = $"id={actividad_id}";
+                result.Function = "ActivityController.DeleteActividad";
+            }
+            catch (Exception err)
+            {
+                result.Status = 500;
+                result.Message = err.Message;
+                result.Data = null;
+                result.Parameters = $"ID = {actividad_id}";
+                result.Function = "ActivityController.DeleteActividad";
+            }
+
+            return result;
+        }
+
+        [HttpPost("PutReagendarActividad/{actividad_id}/{schedule}")]
+        public ResultRequest PutReagendarActividad(int actividad_id, DateTime schedule)
+        {
+            ResultRequest result = new ResultRequest();
+
+            string Msg = "";
+            int status = 200;
+
+            try
+            {
+                Activity activity = _context.Activities.FirstOrDefault(x => x.Id == actividad_id);
+
+                DateTime s1 = DateTime.Parse(schedule.ToString());
+
+                string d1 = s1.ToString("yyy-MM-dd");
+                string s = s1.ToString("HH:mm");
+
+                TimeSpan t1 = TimeSpan.Parse(s);
+                int hora = t1.Hours + 1;
+                int dia = t1.Days - 1;
+
+                TimeSpan t2 = new TimeSpan(hora, t1.Minutes, 0);
+
+                var rangoFecha = (from st in _context.Activities
+                                  where st.DateActivity.ToString() == d1 &&
+                                        (st.TimeBegin >= t1 && st.TimeEnd <= t2) &&
+                                        st.PropertyId == activity.PropertyId
+                                  select st).Count();
+
+                if (rangoFecha == 0)
                 {
-                    activity.Status = estatus;
+                    activity.Schedule = schedule;
+                    activity.DateActivity = s1;
+                    activity.TimeBegin = t1;
+                    activity.TimeEnd = t2;
 
                     _context.Entry(activity).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                     _context.SaveChanges();
+
+                    Msg = "La actividad se actualizo correctamente";
+                }
+                else
+                {
+                    Msg = "No se puede actualizar actividad en la misma fecha y hora";
+                    status = 400;
                 }
 
-                result.Status = 201;
-                result.Message = "";
+                result.Status = status;
+                result.Message = Msg;
                 result.Data = 1;
-                result.Parameters = $"id={id}, estatus={estatus}";
+                result.Parameters = $"id={actividad_id}, schedule={schedule}";
                 result.Function = "ActivityController.PutActividad";
             }
             catch (Exception err)
@@ -264,42 +402,45 @@ namespace Agenda.Controllers
                 result.Status = 500;
                 result.Message = err.Message;
                 result.Data = null;
-                result.Parameters = $"id={id}, estatus={estatus}";
+                result.Parameters = $"id={actividad_id}, schedule={schedule}";
                 result.Function = "ActivityController.PutActividad";
             }
 
             return result;
         }
 
-        [HttpDelete("DeleteActividad/{id}")]
-        public ResultRequest DeleteActividad(int id)
+        [HttpPost("PutCancelarActividad/{actividad_id}")]
+        public ResultRequest PutCancelarActividad(int actividad_id)
         {
             ResultRequest result = new ResultRequest();
-            List<Activity> lst = new List<Activity>();
+
+            string Msg = "";
+            int status = 200;
 
             try
             {
-                Activity activity = _context.Activities.Find(id);
+                Activity activity = _context.Activities.FirstOrDefault(x => x.Id == actividad_id);
+                
+                activity.Status = "Cancel";
 
-                if (activity != null)
-                {
-                    _context.Remove(activity);
-                    _context.SaveChanges();
-                }
+                _context.Entry(activity).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                _context.SaveChanges();
 
-                result.Status = 201;
-                result.Message = "";
+                Msg = "La actividad se cancelo correctamente";
+
+                result.Status = status;
+                result.Message = Msg;
                 result.Data = 1;
-                result.Parameters = $"ID = {id}";
-                result.Function = "ActivityController.DeleteActividad";
+                result.Parameters = $"id={actividad_id}";
+                result.Function = "ActivityController.PutCancelarActividad";
             }
             catch (Exception err)
             {
                 result.Status = 500;
                 result.Message = err.Message;
                 result.Data = null;
-                result.Parameters = $"ID = {id}";
-                result.Function = "ActivityController.DeleteActividad";
+                result.Parameters = $"id={actividad_id}";
+                result.Function = "ActivityController.PutCancelarActividad";
             }
 
             return result;

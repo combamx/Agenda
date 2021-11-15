@@ -152,5 +152,33 @@ namespace Agenda.Controllers
 
             return result;
         }
+
+        [HttpGet("ListaEncuestaActivity/{activity_id}")]
+        public ResultRequest ListaEncuestaActivity(int activity_id)
+        {
+            ResultRequest result = new ResultRequest();
+            List<Survey> lst = new List<Survey>();
+
+            try
+            {
+                lst = _context.Surveys.Where(x => x.ActivityId == activity_id).ToList();
+
+                result.Status = 200;
+                result.Message = "";
+                result.Data = lst;
+                result.Parameters = "";
+                result.Function = "SurveyController.ListaEncuestaActivity";
+            }
+            catch (Exception err)
+            {
+                result.Status = 500;
+                result.Message = err.Message;
+                result.Data = null;
+                result.Parameters = "";
+                result.Function = "SurveyController.ListaEncuestaActivity";
+            }
+
+            return result;
+        }
     }
 }

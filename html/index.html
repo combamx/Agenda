@@ -19,13 +19,7 @@
 
     <link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">
 
-    <style>
-        .datepicker {
-            z-index:1151 !important;
-        }
-    </style>
-
-
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
 </head>
 
 <body>
@@ -56,12 +50,13 @@
                     </li>
 
                     <li class="active">
-                        <a href="#"><i class="fa fa-table"></i> <span class="nav-label">Activity</span><span
-                                class="fa arrow"></span></a>
+                        <a href="#">
+                            <i class="fa fa-table"></i> <span class="nav-label">Activity</span><span class="fa arrow"></span>
+                        </a>
                         <ul class="nav nav-second-level">
-                            <li><a href="table_basic.html">Property</a></li>
+                            <li><a href="property.html">Property</a></li>
                             <li class="active"><a href="index.html">Activity</a></li>
-                            <li><a href="table_foo_table.html">Survey</a></li>
+                            <li><a href="survey.html">Survey</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -72,12 +67,13 @@
             <div class="row border-bottom">
                 <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
                     <div class="navbar-header">
-                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i
-                                class="fa fa-bars"></i> </a>
+                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#">
+                            <i class="fa fa-bars"></i>
+                        </a>
                         <form role="search" class="navbar-form-custom" action="search_results.html">
                             <div class="form-group">
                                 <input type="text" placeholder="Search for something..." class="form-control"
-                                    name="top-search" id="top-search">
+                                       name="top-search" id="top-search">
                             </div>
                         </form>
                     </div>
@@ -92,7 +88,7 @@
 
             <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2>Activity</h2>
+                    <h2>Activity List</h2>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
                             <a href="index.html">Home</a>
@@ -115,7 +111,6 @@
                     <div class="col-lg-12">
                         <div class="ibox ">
                             <div class="ibox-title">
-                                <h5>Basic Data Tables example with responsive plugin</h5>
                                 <div class="col-12"><button type="button" class="btn btn-primary" onclick="AgregarActividad()">Agregar Actividad</button></div>
                                 <div class="ibox-tools">
                                     <a class="collapse-link">
@@ -125,9 +120,11 @@
                                         <i class="fa fa-wrench"></i>
                                     </a>
                                     <ul class="dropdown-menu dropdown-user">
-                                        <li><a href="#" class="dropdown-item">Config option 1</a>
+                                        <li>
+                                            <a href="#" class="dropdown-item">Config option 1</a>
                                         </li>
-                                        <li><a href="#" class="dropdown-item">Config option 2</a>
+                                        <li>
+                                            <a href="#" class="dropdown-item">Config option 2</a>
                                         </li>
                                     </ul>
                                     <a class="close-link">
@@ -140,26 +137,31 @@
 
                                 <div class="table-responsive">
                                     <table id="tbActividades"
-                                        class="table table-striped table-bordered table-hover dataTables-example">
+                                           class="table table-striped table-bordered table-hover dataTables-example">
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
                                                 <th>Title</th>
                                                 <th>Schedule</th>
+                                                <th>Time Begin</th>
+                                                <th>Time End</th>
                                                 <th>Status</th>
-                                                <th>Accion</th>
+                                                <th>Survey</th>
+                                                <th>Acción</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-
                                         </tbody>
                                         <tfoot>
                                             <tr>
                                                 <th>ID</th>
                                                 <th>Title</th>
                                                 <th>Schedule</th>
+                                                <th>Time Begin</th>
+                                                <th>Time End</th>
                                                 <th>Status</th>
-                                                <th>Accion</th>
+                                                <th>Survey</th>
+                                                <th>Acción</th>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -232,13 +234,23 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="agregarStatus">Estatus</label>
+                                    <select class="form-control" id="agregarStatus">
+                                        <option value="Active">Activo</option>
+                                        <option value="Cancel">Cancelado</option>
+                                        <option value="Done">Finalizado</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group">
                                     <label class="col-form-label" for="date_modified">Fecha</label>
                                     <div class="input-group date">
-                                        <input id="agregarFecha" name="agregarFecha" type="date" class="form-control" value="" required>
+                                        <input id="agregarFecha" name="agregarFecha" type="text" class="form-control" data-provide="datepicker" value="" data-date-format="yyyy-mm-dd" required>
                                     </div>
                                 </div>
                             </div>
@@ -249,7 +261,7 @@
                                 </div>
                             </div>
                         </div>
-        
+
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -291,12 +303,22 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="agregarStatus">Estatus</label>
+                                    <select class="form-control" id="editarStatus">
+                                        <option value="Active">Activo</option>
+                                        <option value="Cancel">Cancelado</option>
+                                        <option value="Done">Finalizado</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group">
                                     <label class="col-form-label" for="date_modified">Fecha</label>
-                                    <input id="editarFecha" name="editarFecha" type="date" class="form-control" value="" required>
+                                    <input id="editarFecha" name="editarFecha" type="text" class="form-control" data-provide="datepicker" value="" data-date-format="yyyy-mm-dd" required>
                                 </div>
                             </div>
                             <div class="col-12">
@@ -317,27 +339,98 @@
         </div>
     </div>
 
-    <div class="modal fade" id="activityReagendar" tabindex="-1" data-keyboard="true" aria-labelledby="sistemReagendar" aria-hidden="true" data-backdrop="static">
+    <div class="modal fade" id="sisteEliminar" tabindex="-1" aria-labelledby="eliminarModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="sistemReagendar">Reagendar Actividad</h5>
+                    <h5 class="modal-title" id="eliminarModalLabel">Eliminar Actividad</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-
+                    ¿Deseas eliminar la actividad (<strong id="idActividad"></strong>) seleccionada?
+                    <input type="hidden" id="eliminarActividad" value="0" />
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Aceptar</button>
+                    <button type="button" class="btn btn-primary" onclick="AceptarEliminar()">Aceptar</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <div class="modal fade" id="activityReagendar" tabindex="-1" aria-labelledby="activityReagendarLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="activityReagendarLabel">Reagendar Actividad</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="ibox-content m-b-sm border-bottom">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="col-form-label" for="order_id">Actividad ID</label>
+                                    <input type="text" id="reagendarActividad_id" name="reagendarActividad_id" value="" placeholder="Actividad ID" class="form-control" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="col-form-label" for="date_modified">Fecha</label>
+                                    <input id="reagendarFecha" name="reagendarFecha" type="date" class="form-control" value="" required>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="col-form-label" for="amount">Hora</label>
+                                    <input type="time" id="reagendarHora" name="reagendarHora" value="" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
 
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="GuardarReagendarActividad()">Aceptar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="surveyGrid" tabindex="-1" aria-labelledby="sistemMsgLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" style="z-index: 9999 !important;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sistemMsgLabel">Survey List</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table id="tbSurvey" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">id</th>
+                                <th scope="col">Answers</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Mainly scripts -->
     <script src="js/jquery-3.1.1.min.js"></script>
@@ -348,6 +441,8 @@
 
     <script src="js/plugins/dataTables/datatables.min.js"></script>
     <script src="js/plugins/dataTables/dataTables.bootstrap4.min.js"></script>
+
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 
     <!-- Custom and plugin javascript -->
     <script src="js/inspinia.js"></script>
@@ -374,17 +469,13 @@
                             break
                         case 200:
                         case 201:
-                            var d = new Date(json.data.dateActivity);
-                            var day = d.getDate();
-                            var month = d.getMonth() + 1;
-                            var year = d.getFullYear();
-                            var d = day + "/" + month + "/" + year;
-
+                            var fecha = json.data.dateActivity;
                             $('#editarActividad_id').val(json.data.id);
                             $('#editarTitulo').val(json.data.title);
                             $('#editarPropiedad').val(json.data.propertyId);
-                            $('#editarFecha').val(d);
-                            $('#editarHora').val(json.data.timeBegin.hours + ":" + json.data.timeBegin.minutes);
+                            $('#editarFecha').val(fecha.toString());
+                            $('#editarHora').val(json.data.timeBegin);
+                            $('#editarStatus').val(json.data.status).attr("selected", "selected");
 
                             $("#activityEditar").modal('show');
                             break;
@@ -409,11 +500,59 @@
         }
 
         function EliminarActividad(id) {
-            $("#activityAgregar").modal('show');
+            $("#eliminarActividad").val(id);
+            $("#idActividad").text(id);
+            $("#sisteEliminar").modal('show');
+        }
+
+        function AceptarEliminar() {
+            urls = "https://localhost:44303/api/Activity/DeleteActividad/" + $("#eliminarActividad").val();
+            $.ajax({
+                type: "post",
+                url: urls,
+                dataType: 'json',
+                success: function (json) {
+                    console.log(json);
+                    switch (json.status) {
+                        case 400:
+                            $('#MsgBody').text(json.message);
+                            $('#sistemMsg').modal('show');
+                            break
+                        case 200:
+                        case 201:
+                            $("#sisteEliminar").modal('hide');
+                            $('#MsgBody').text(json.message);
+                            $('#sistemMsg').modal('show');
+                            CargarDatosGrid();
+                            break;
+                        default:
+
+                            break;
+                    }
+
+                },
+                complete: function (jqXHR, status) {
+                    console.log(jqXHR);
+                },
+                error: function (jqXHR, status, error) {
+                    console.log(jqXHR);
+                    console.log(error);
+
+                    $('#MsgBody').text(error);
+                    $('#activityAgregar').modal('hide');
+                    $("#sisteEliminar").modal('hide');
+                    $('#sistemMsg').modal('show');
+                },
+            });
         }
 
         function AgregarActividad() {
             $("#activityAgregar").modal('show');
+        }
+
+        function ReagendarActividad(id) {
+            $("#reagendarActividad_id").val(id);
+            $("#activityReagendar").modal('show');
         }
 
         function GuardarActividad() {
@@ -447,13 +586,14 @@
                 Objdata = {
                     actividad_id: $("#editarActividad_id").val(),
                     property_id: $('#editarPropiedad').val(),
-                    schedule: $('#editarFecha').val() + ' ' + $('#editarHora').val(),
+                    schedule: $('#editarFecha').val() + 'T' + $('#editarHora').val(),
                     title: $('#editarTitulo').val(),
+                    status: $('#editarStatus').val()
                 };
 
                 $.ajax({
                     type: "post",
-                    url: "https://localhost:44303/api/Activity/PutActividad/" + Objdata.actividad_id + "/" + Objdata.property_id + "/" + Objdata.schedule + "/" + Objdata.title,
+                    url: "https://localhost:44303/api/Activity/PutActividad/" + Objdata.actividad_id + "/" + Objdata.property_id + "/" + Objdata.schedule + "/" + Objdata.title + "/" + Objdata.status,
                     data: Objdata,
                     dataType: 'json',
                     success: function (json) {
@@ -465,6 +605,7 @@
                                 break
                             case 200:
                             case 201:
+                                $("#editarActividad_id").val("");
                                 $('#MsgBody').text(json.message);
                                 $('#sistemMsg').modal('show');
                                 CargarDatosGrid();
@@ -515,13 +656,14 @@
 
                 Objdata = {
                     property_id: $('#agregarPropiedad').val(),
-                    schedule: $('#agregarFecha').val() + ' ' + $('#agregarHora').val(),
+                    schedule: $('#agregarFecha').val() + 'T' + $('#agregarHora').val(),
                     title: $('#agregarTitulo').val(),
+                    status: $('#agregarStatus').val()
                 };
 
                 $.ajax({
                     type: "POST",
-                    url: "https://localhost:44303/api/Activity/PostActividad/" + Objdata.property_id + "/" + Objdata.schedule + "/" + Objdata.title,
+                    url: "https://localhost:44303/api/Activity/PostActividad/" + Objdata.property_id + "/" + Objdata.schedule + "/" + Objdata.title + "/" + Objdata.status,
                     data: Objdata,
                     processData: true,
                     dataType: 'json',
@@ -534,6 +676,7 @@
                                 break
                             case 200:
                             case 201:
+                                $("#editarActividad_id").val("");
                                 $('#MsgBody').text(json.message);
                                 $('#sistemMsg').modal('show');
                                 CargarDatosGrid();
@@ -557,26 +700,100 @@
                     },
                 });
             }
-            
+
+        }
+
+        function GuardarReagendarActividad() {
+            if ($('#reagendarFecha').val() == "") {
+                $('#MsgBody').text("Falta de capturar la fecha");
+                $('#sistemMsg').modal('show');
+                $('#reagendarFecha').focus();
+
+                return false;
+            }
+
+            if ($('#reagendarHora').val() == "") {
+                $('#MsgBody').text("Falta de capturar la hora");
+                $('#sistemMsg').modal('show');
+                $('#reagendarHora').focus();
+
+                return false;
+            }
+
+            Objdata = {
+                actividad_id: $("#reagendarActividad_id").val(),
+                schedule: $('#reagendarFecha').val() + ' ' + $('#reagendarHora').val()
+            };
+
+            $.ajax({
+                type: "post",
+                url: "https://localhost:44303/api/Activity/PutReagendarActividad/" + Objdata.actividad_id + "/" + Objdata.schedule,
+                data: Objdata,
+                dataType: 'json',
+                success: function (json) {
+                    console.log(json);
+                    switch (json.status) {
+                        case 400:
+                            $('#MsgBody').text(json.message);
+                            $('#sistemMsg').modal('show');
+                            break
+                        case 200:
+                        case 201:
+                            $('#MsgBody').text(json.message);
+                            $('#sistemMsg').modal('show');
+                            CargarDatosGrid();
+                            break;
+                        default:
+
+                            break;
+                    }
+
+                },
+                complete: function (jqXHR, status) {
+                    console.log(jqXHR);
+                },
+                error: function (jqXHR, status, error) {
+                    console.log(jqXHR);
+                    console.log(error);
+
+                    $('#MsgBody').text(error);
+                    $('#activityAgregar').modal('hide');
+                    $('#sistemMsg').modal('show');
+                },
+            });
+
         }
 
         function CargarDatosGrid() {
-            $.get("https://localhost:44303/api/Activity/ListaActividad", function (data) {
+            var table = $('#tbActividades').DataTable();
 
+            $.get("https://localhost:44303/api/Activity/ListaActividad", function (data) {
+                table.destroy();
+                $("#tbActividades tbody").empty();
                 try {
                     $.each(data.data, function (index, value) {
+                        survey = "0";
+                        status = "";
+
                         if (value.status == 'Active') status = "<i class=\"material-icons\">check</i>";
                         else if (value.status == 'Cancel') status = "<i class=\"material-icons\">cancel</i>";
                         else if (value.status == 'Done') status = "<i class=\"material-icons\">done_all</i>";
 
-                        $("#tbActividades tbody").append("<tr class=\"gradeX\"><td>" + value.id + "</td><td>" + value.title + "</td><td>" + value.schedule + "</td><td class=\"center\">" + status + "</td><td class=\"center\"><button type=\"button\" class=\"btn btn-outline-success\" onclick=\"EditarActividad(" + value.id + ")\">Editar</button><button type=\"button\" class=\"btn btn-outline-danger\" onclick=\"EliminarActividad(" + value.id + ")\">Eliminar</button></td></tr>");
+                        if (value.survey > 0) survey = "<button type=\"button\" class=\"btn btn-link\" onclick=\"CargarDatosSurvey(" + value.id + ")\">" + value.survey  + "</button>";
+
+                        buttons = "<button type=\"button\" class=\"btn btn-outline-success\" onclick=\"EditarActividad(" + value.id + ")\">Editar</button><button type=\"button\" class=\"btn btn-outline-danger\" onclick=\"EliminarActividad(" + value.id + ")\">Eliminar</button>";
+
+                        if (value.status != 'Cancel') buttons += "<button type=\"button\" class=\"btn btn-outline-secondary\" onclick=\"ReagendarActividad(" + value.id + ")\">Reagendar</button><button type=\"button\" class=\"btn btn-outline-info\" onclick=\"CancelarActividad(" + value.id + ")\">Cancelar</button>";
+
+                        $("#tbActividades tbody").append("<tr class=\"gradeX\"><td>" + value.id + "</td><td>" + value.title + "</td><td>" + value.dateActivity + "</td><td>" + value.timeBegin + "</td><td>" + value.timeEnd + "</td><td class=\"center\">" + status + "</td><td class=\"center\">" + survey + "</td><td class=\"center\">" + buttons + "</td></tr>");
                     });
 
                     console.log(data);
 
-                    $('.dataTables-example').DataTable({
-                        pageLength: 25,
+                    $('#tbActividades').DataTable({
+                        pageLength: 10,
                         responsive: true,
+                        ordering: false,
                         destroy: true,
                         dom: '<"html5buttons"B>lTfgitp',
                         language: {
@@ -600,12 +817,15 @@
                                 }
                             }
                         ],
-                        "columns": [
+                        columns: [
                             { "width": "2%" },
+                            { "width": "30%" },
+                            null,
+                            null,
                             null,
                             null,
                             { "width": "5%" },
-                            { "width": "10%" }
+                            { "width": "22%" }
                         ]
                     });
 
@@ -617,35 +837,35 @@
                 }
             })
             .fail(function (jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR);
+                    console.log(jqXHR);
 
-                msg = "";
+                    msg = "";
 
-                if (jqXHR.status === 0) {
-                    msg = 'Not connect: Verify Network.';
-                }
-                else if (jqXHR.status == 404) {
-                    msg = 'Requested page not found [404]';
-                }
-                else if (jqXHR.status == 500) {
-                    msg = 'Internal Server Error [500].';
-                }
-                else if (textStatus === 'parsererror') {
-                    msg = 'Requested JSON parse failed.';
-                }
-                else if (textStatus === 'timeout') {
-                    msg = 'Time out error.';
-                }
-                else if (textStatus === 'abort') {
-                    msg = 'Ajax request aborted.';
-                }
-                else {
-                    msg = 'Uncaught Error: ' + jqXHR.responseText;
-                }
+                    if (jqXHR.status === 0) {
+                        msg = 'Not connect: Verify Network.';
+                    }
+                    else if (jqXHR.status == 404) {
+                        msg = 'Requested page not found [404]';
+                    }
+                    else if (jqXHR.status == 500) {
+                        msg = 'Internal Server Error [500].';
+                    }
+                    else if (textStatus === 'parsererror') {
+                        msg = 'Requested JSON parse failed.';
+                    }
+                    else if (textStatus === 'timeout') {
+                        msg = 'Time out error.';
+                    }
+                    else if (textStatus === 'abort') {
+                        msg = 'Ajax request aborted.';
+                    }
+                    else {
+                        msg = 'Uncaught Error: ' + jqXHR.responseText;
+                    }
 
-                $("#MsgBody").text(msg);
-                $("#sistemMsg").modal('show');
-            });
+                    $("#MsgBody").text(msg);
+                    $("#sistemMsg").modal('show');
+                });
         }
 
         function CargarPropiedades() {
@@ -662,6 +882,121 @@
                     $("#sistemMsg").modal('show');
                 }
             })
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+
+                    msg = "";
+
+                    if (jqXHR.status === 0) {
+                        msg = 'Not connect: Verify Network.';
+                    }
+                    else if (jqXHR.status == 404) {
+                        msg = 'Requested page not found [404]';
+                    }
+                    else if (jqXHR.status == 500) {
+                        msg = 'Internal Server Error [500].';
+                    }
+                    else if (textStatus === 'parsererror') {
+                        msg = 'Requested JSON parse failed.';
+                    }
+                    else if (textStatus === 'timeout') {
+                        msg = 'Time out error.';
+                    }
+                    else if (textStatus === 'abort') {
+                        msg = 'Ajax request aborted.';
+                    }
+                    else {
+                        msg = 'Uncaught Error: ' + jqXHR.responseText;
+                    }
+
+                    $("#MsgBody").text(msg);
+                    $("#sistemMsg").modal('show');
+                });
+        }
+
+        function CancelarActividad(id) {
+
+            Objdata = {
+                actividad_id: id,
+            };
+
+            $.ajax({
+                type: "post",
+                url: "https://localhost:44303/api/Activity/PutCancelarActividad/" + Objdata.actividad_id,
+                data: Objdata,
+                dataType: 'json',
+                success: function (json) {
+                    console.log(json);
+                    switch (json.status) {
+                        case 400:
+                            $('#MsgBody').text(json.message);
+                            $('#sistemMsg').modal('show');
+                            break
+                        case 200:
+                        case 201:
+                            $('#MsgBody').text(json.message);
+                            $('#sistemMsg').modal('show');
+                            CargarDatosGrid();
+                            break;
+                        default:
+
+                            break;
+                    }
+
+                },
+                complete: function (jqXHR, status) {
+                    console.log(jqXHR);
+                },
+                error: function (jqXHR, status, error) {
+                    console.log(jqXHR);
+                    console.log(error);
+
+                    $('#MsgBody').text(error);
+                    $('#activityAgregar').modal('hide');
+                    $('#sistemMsg').modal('show');
+                },
+            });
+        }
+
+        function CargarDatosSurvey(id) {
+            //var table = $('#tbSurvey').DataTable();
+
+            $.get("https://localhost:44303/api/Survey/ListaEncuestaActivity/" + id, function (data) {
+                //table.destroy();
+                $("#tbSurvey tbody").empty();
+
+                try {
+                    $.each(data.data, function (index, value) {
+                        survey = "0";
+                        status = "";
+
+                        $("#tbSurvey tbody").append("<tr class=\"gradeX\"><td>" + value.id + "</td><td>" + value.answers + "</td></tr>");
+                    });
+
+                    console.log(data);
+                    /*
+                    $('#tbSurvey').DataTable({
+                        pageLength: 10,
+                        responsive: true,
+                        ordering: false,
+                        destroy: true,
+                        language: {
+                            "url": "https://cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+                        },
+                        columns: [
+                            { "width": "2%" },
+                            null
+                        ]
+                    });*/
+
+                    $('#surveyGrid').modal('show');
+                }
+                catch (err) {
+                    console.log(err);
+                    $("#MsgBody").text(err);
+                    $("#sistemMsg").modal('show');
+                }
+            })
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR);
 
@@ -692,11 +1027,30 @@
                 $("#MsgBody").text(msg);
                 $("#sistemMsg").modal('show');
             });
+            
         }
 
         $(document).ready(function () {
+            $('#agregarFecha').datepicker({
+                format: 'yyyy-mm-dd',
+            });
+
+            $('#editarFecha').datepicker({
+                format: 'yyyy-mm-dd',
+            });
+
             CargarDatosGrid();
             CargarPropiedades();
+
+            $('#sistemMsg').on('hidden.bs.modal', function (event) {
+                if ($('#activityAgregar').is(':visible')) {
+                    $('#activityAgregar').modal('hide');
+                }
+
+                if ($('#activityEditar').is(':visible')) {
+                    $('#activityEditar').modal('hide');
+                }
+            });
         });
 
     </script>
