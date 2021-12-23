@@ -1,5 +1,6 @@
 ﻿using Agenda.Models;
 using Agenda.Models.Request;
+using Agenda.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -25,30 +26,10 @@ namespace Agenda.Controllers
         {
             ResultRequest result = new ResultRequest();
 
-            List<Activity> lst = new List<Activity>();
-
             try
             {
-                lst = _context.Activities.OrderByDescending(x => x.Id).ToList();
-                List<ActivityRequest> requestsActivity = new List<ActivityRequest>();
-
-                foreach (var item in lst)
-                {
-                    ActivityRequest i = new ActivityRequest()
-                    {
-                        Id = item.Id,
-                        PropertyId = item.PropertyId,
-                        DateActivity = String.Format("{0:dd/MM/yyyy}", item.DateActivity),
-                        Schedule = item.Schedule,
-                        Status = item.Status,
-                        TimeBegin = item.TimeBegin.ToString(),
-                        TimeEnd = item.TimeEnd.ToString(),
-                        Title = item.Title,
-                        Survey = _context.Surveys.Count(x => x.ActivityId == item.Id)
-                    };
-
-                    requestsActivity.Add(i);
-                }
+                ActivityService activityService = new ActivityService(_context);
+                List<ActivityRequest> requestsActivity = activityService.GetListActividad();
 
                 result.Status = 200;
                 result.Message = "";

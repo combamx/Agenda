@@ -9,7 +9,6 @@ namespace Agenda.Models
     public partial class agendaContext : DbContext
     {
         private readonly string _connectionString;
-
         public agendaContext(string connectionString)
         {
             _connectionString = connectionString;
@@ -23,17 +22,11 @@ namespace Agenda.Models
         public virtual DbSet<Activity> Activities { get; set; }
         public virtual DbSet<Property> Properties { get; set; }
         public virtual DbSet<Survey> Surveys { get; set; }
+        public virtual DbSet<User> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer("Data Source=Localhost;Initial Catalog=agenda;Integrated Security=True");
-            }
-            else
-            {
-                optionsBuilder.UseSqlServer(_connectionString);
-            }
+            optionsBuilder.UseSqlServer(_connectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -160,6 +153,19 @@ namespace Agenda.Models
                     .HasForeignKey(d => d.ActivityId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Survey_Activity");
+            });
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.ToTable("User");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Email)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("email");
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -9,7 +9,9 @@ namespace Agenda.Services.Interfaces
 {
     public interface IActivityService
     {
-        List<Activity> GetListActividad();
+        List<ActivityRequest> GetListActividad();
+
+        ActivityRequest GetActividad(int id);
 
         int PostActividad(int property_id, DateTime schedule, string title);
 

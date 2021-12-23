@@ -38,7 +38,7 @@ namespace Agenda
 
             #region Se pasa la Cadena de Conexion del AppSetting al Context
             string sqlConnectionString = Configuration.GetConnectionString("agenda");
-            services.AddScoped<agendaContext>(options => new agendaContext(sqlConnectionString));
+            services.AddScoped<agendaContext>(optionsBuilder => new agendaContext(sqlConnectionString));
             #endregion
         }
 
