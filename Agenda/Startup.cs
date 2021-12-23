@@ -18,6 +18,7 @@ namespace Agenda
 {
     public class Startup
     {
+        //readonly string AgendaMiCros = "AgendaMicross";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -28,6 +29,13 @@ namespace Agenda
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddCors(options => {
+            //    options.AddPolicy(name: AgendaMiCros, builder =>
+            //    {
+            //        builder.WithOrigins("*");
+            //    });
+            //});
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -51,6 +59,8 @@ namespace Agenda
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Agenda v1"));
             }
+
+            //app.UseCors(AgendaMiCros);
 
             app.UseCors("AllowAll");
 

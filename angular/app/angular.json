@@ -34,9 +34,33 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.sass"
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "src/styles.sass",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "./template/css/bootstrap.min.css",
+              "./template/font-awesome/css/font-awesome.css",
+              "./template/css/plugins/dataTables/datatables.min.css",
+              "./template/css/animate.css",
+              "./template/css/style.css",
+              "./template/css/plugins/datapicker/datepicker3.css",
+              "./template/css/jquery-ui.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/@popperjs/core/dist/umd/popper.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "./template/js/jquery-3.1.1.min.js",
+              "./template/js/popper.min.js",
+              "./template/js/bootstrap.js",
+              "./template/js/plugins/metisMenu/jquery.metisMenu.js",
+              "./template/js/plugins/slimscroll/jquery.slimscroll.min.js",
+              "./template/js/plugins/dataTables/datatables.min.js",
+              "./template/js/plugins/dataTables/dataTables.bootstrap4.min.js",
+              "./template/js/inspinia.js",
+              "./template/js/plugins/pace/pace.min.js",
+              "./template/js/plugins/datapicker/bootstrap-datepicker.js",
+              "./template/js/jquery-ui.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -102,6 +126,7 @@
               "src/assets"
             ],
             "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.sass"
             ],
             "scripts": []

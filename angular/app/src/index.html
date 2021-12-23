@@ -2,12 +2,599 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INSPINIA | Omar Cortes Casillas</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
-<body>
+<body class="mat-typography">
   <app-root></app-root>
+
+  <script>
+    function EditarActividad(id) {
+        console.log(id);
+
+        $.ajax({
+            type: "GET",
+            url: "https://localhost:44303/api/Activity/Actividad/" + id,
+            dataType: 'json',
+            success: function (json) {
+                console.log(json);
+                switch (json.status) {
+                    case 400:
+                        $('#MsgBody').text(json.message);
+                        $('#sistemMsg').modal('show');
+                        break
+                    case 200:
+                    case 201:
+                        var fecha = json.data.dateActivity;
+                        $('#editarActividad_id').val(json.data.id);
+                        $('#editarTitulo').val(json.data.title);
+                        $('#editarPropiedad').val(json.data.propertyId);
+                        $('#editarFecha').val(fecha.toString());
+                        $('#editarHora').val(json.data.timeBegin);
+                        $('#editarStatus').val(json.data.status).attr("selected", "selected");
+
+                        $("#activityEditar").modal('show');
+                        break;
+                    default:
+
+                        break;
+                }
+
+            },
+            complete: function (jqXHR, status) {
+                console.log(jqXHR);
+            },
+            error: function (jqXHR, status, error) {
+                console.log(jqXHR);
+                console.log(error);
+
+                $('#MsgBody').text(error);
+                $('#activityAgregar').modal('hide');
+                $('#sistemMsg').modal('show');
+            },
+        });
+    }
+
+    function EliminarActividad(id) {
+        $("#eliminarActividad").val(id);
+        $("#idActividad").text(id);
+        $("#sisteEliminar").modal('show');
+    }
+
+    function AceptarEliminar() {
+        urls = "https://localhost:44303/api/Activity/DeleteActividad/" + $("#eliminarActividad").val();
+        $.ajax({
+            type: "post",
+            url: urls,
+            dataType: 'json',
+            success: function (json) {
+                console.log(json);
+                switch (json.status) {
+                    case 400:
+                        $('#MsgBody').text(json.message);
+                        $('#sistemMsg').modal('show');
+                        break
+                    case 200:
+                    case 201:
+                        $("#sisteEliminar").modal('hide');
+                        $('#MsgBody').text(json.message);
+                        $('#sistemMsg').modal('show');
+                        CargarDatosGrid();
+                        break;
+                    default:
+
+                        break;
+                }
+
+            },
+            complete: function (jqXHR, status) {
+                console.log(jqXHR);
+            },
+            error: function (jqXHR, status, error) {
+                console.log(jqXHR);
+                console.log(error);
+
+                $('#MsgBody').text(error);
+                $('#activityAgregar').modal('hide');
+                $("#sisteEliminar").modal('hide');
+                $('#sistemMsg').modal('show');
+            },
+        });
+    }
+
+    function AgregarActividad() {
+        $("#activityAgregar").modal('show');
+    }
+
+    function ReagendarActividad(id) {
+        $("#reagendarActividad_id").val(id);
+        $("#activityReagendar").modal('show');
+    }
+
+    function GuardarActividad() {
+
+        if ($('#editarActividad_id').val() != "") {
+
+            if ($('#editarTitulo').val() == "") {
+                $('#MsgBody').text("Falta de capturar el titulo");
+                $('#sistemMsg').modal('show');
+                $('#agregarTitulo').focus();
+
+                return false;
+            }
+
+            if ($('#editarFecha').val() == "") {
+                $('#MsgBody').text("Falta de capturar la fecha");
+                $('#sistemMsg').modal('show');
+                $('#agregarFecha').focus();
+
+                return false;
+            }
+
+            if ($('#editarHora').val() == "") {
+                $('#MsgBody').text("Falta de capturar la hora");
+                $('#sistemMsg').modal('show');
+                $('#agregarHora').focus();
+
+                return false;
+            }
+
+            Objdata = {
+                actividad_id: $("#editarActividad_id").val(),
+                property_id: $('#editarPropiedad').val(),
+                schedule: $('#editarFecha').val() + 'T' + $('#editarHora').val(),
+                title: $('#editarTitulo').val(),
+                status: $('#editarStatus').val()
+            };
+
+            $.ajax({
+                type: "post",
+                url: "https://localhost:44303/api/Activity/PutActividad/" + Objdata.actividad_id + "/" + Objdata.property_id + "/" + Objdata.schedule + "/" + Objdata.title + "/" + Objdata.status,
+                data: Objdata,
+                dataType: 'json',
+                success: function (json) {
+                    console.log(json);
+                    switch (json.status) {
+                        case 400:
+                            $('#MsgBody').text(json.message);
+                            $('#sistemMsg').modal('show');
+                            break
+                        case 200:
+                        case 201:
+                            $("#editarActividad_id").val("");
+                            $('#MsgBody').text(json.message);
+                            $('#sistemMsg').modal('show');
+                            CargarDatosGrid();
+                            break;
+                        default:
+
+                            break;
+                    }
+
+                },
+                complete: function (jqXHR, status) {
+                    console.log(jqXHR);
+                },
+                error: function (jqXHR, status, error) {
+                    console.log(jqXHR);
+                    console.log(error);
+
+                    $('#MsgBody').text(error);
+                    $('#activityAgregar').modal('hide');
+                    $('#sistemMsg').modal('show');
+                },
+            });
+        }
+        else {
+            if ($('#agregarTitulo').val() == "") {
+                $('#MsgBody').text("Falta de capturar el titulo");
+                $('#sistemMsg').modal('show');
+                $('#agregarTitulo').focus();
+
+                return false;
+            }
+
+            if ($('#agregarFecha').val() == "") {
+                $('#MsgBody').text("Falta de capturar la fecha");
+                $('#sistemMsg').modal('show');
+                $('#agregarFecha').focus();
+
+                return false;
+            }
+
+            if ($('#agregarHora').val() == "") {
+                $('#MsgBody').text("Falta de capturar la hora");
+                $('#sistemMsg').modal('show');
+                $('#agregarHora').focus();
+
+                return false;
+            }
+
+            Objdata = {
+                property_id: $('#agregarPropiedad').val(),
+                schedule: $('#agregarFecha').val() + 'T' + $('#agregarHora').val(),
+                title: $('#agregarTitulo').val(),
+                status: $('#agregarStatus').val()
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "https://localhost:44303/api/Activity/PostActividad/" + Objdata.property_id + "/" + Objdata.schedule + "/" + Objdata.title + "/" + Objdata.status,
+                data: Objdata,
+                processData: true,
+                dataType: 'json',
+                success: function (json) {
+                    console.log(json);
+                    switch (json.status) {
+                        case 400:
+                            $('#MsgBody').text(json.message);
+                            $('#sistemMsg').modal('show');
+                            break
+                        case 200:
+                        case 201:
+                            $("#editarActividad_id").val("");
+                            $('#MsgBody').text(json.message);
+                            $('#sistemMsg').modal('show');
+                            CargarDatosGrid();
+                            break;
+                        default:
+
+                            break;
+                    }
+
+                },
+                complete: function (jqXHR, status) {
+                    console.log(jqXHR);
+                },
+                error: function (jqXHR, status, error) {
+                    console.log(jqXHR);
+                    console.log(error);
+
+                    $('#MsgBody').text(error);
+                    $('#activityAgregar').modal('hide');
+                    $('#sistemMsg').modal('show');
+                },
+            });
+        }
+
+    }
+
+    function GuardarReagendarActividad() {
+        if ($('#reagendarFecha').val() == "") {
+            $('#MsgBody').text("Falta de capturar la fecha");
+            $('#sistemMsg').modal('show');
+            $('#reagendarFecha').focus();
+
+            return false;
+        }
+
+        if ($('#reagendarHora').val() == "") {
+            $('#MsgBody').text("Falta de capturar la hora");
+            $('#sistemMsg').modal('show');
+            $('#reagendarHora').focus();
+
+            return false;
+        }
+
+        Objdata = {
+            actividad_id: $("#reagendarActividad_id").val(),
+            schedule: $('#reagendarFecha').val() + ' ' + $('#reagendarHora').val()
+        };
+
+        $.ajax({
+            type: "post",
+            url: "https://localhost:44303/api/Activity/PutReagendarActividad/" + Objdata.actividad_id + "/" + Objdata.schedule,
+            data: Objdata,
+            dataType: 'json',
+            success: function (json) {
+                console.log(json);
+                switch (json.status) {
+                    case 400:
+                        $('#MsgBody').text(json.message);
+                        $('#sistemMsg').modal('show');
+                        break
+                    case 200:
+                    case 201:
+                        $('#MsgBody').text(json.message);
+                        $('#sistemMsg').modal('show');
+                        CargarDatosGrid();
+                        break;
+                    default:
+
+                        break;
+                }
+
+            },
+            complete: function (jqXHR, status) {
+                console.log(jqXHR);
+            },
+            error: function (jqXHR, status, error) {
+                console.log(jqXHR);
+                console.log(error);
+
+                $('#MsgBody').text(error);
+                $('#activityAgregar').modal('hide');
+                $('#sistemMsg').modal('show');
+            },
+        });
+
+    }
+
+    function CargarDatosGrid() {
+        var table = $('#tbActividades').DataTable();
+
+        $.get("https://localhost:44303/api/Activity/ListaActividad", function (data) {
+            table.destroy();
+            $("#tbActividades tbody").empty();
+            try {
+                $.each(data.data, function (index, value) {
+                    survey = "0";
+                    status = "";
+
+                    if (value.status == 'Active') status = "<i class=\"material-icons\">check</i>";
+                    else if (value.status == 'Cancel') status = "<i class=\"material-icons\">cancel</i>";
+                    else if (value.status == 'Done') status = "<i class=\"material-icons\">done_all</i>";
+
+                    if (value.survey > 0) survey = "<button type=\"button\" class=\"btn btn-link\" onclick=\"CargarDatosSurvey(" + value.id + ")\">" + value.survey  + "</button>";
+
+                    buttons = "<button type=\"button\" class=\"btn btn-outline-success\" onclick=\"EditarActividad(" + value.id + ")\">Editar</button><button type=\"button\" class=\"btn btn-outline-danger\" onclick=\"EliminarActividad(" + value.id + ")\">Eliminar</button>";
+
+                    if (value.status != 'Cancel') buttons += "<button type=\"button\" class=\"btn btn-outline-secondary\" onclick=\"ReagendarActividad(" + value.id + ")\">Reagendar</button><button type=\"button\" class=\"btn btn-outline-info\" onclick=\"CancelarActividad(" + value.id + ")\">Cancelar</button>";
+
+                    $("#tbActividades tbody").append("<tr class=\"gradeX\"><td>" + value.id + "</td><td>" + value.title + "</td><td>" + value.dateActivity + "</td><td>" + value.timeBegin + "</td><td>" + value.timeEnd + "</td><td class=\"center\">" + status + "</td><td class=\"center\">" + survey + "</td><td class=\"center\">" + buttons + "</td></tr>");
+                });
+
+                console.log(data);
+
+                $('#tbActividades').DataTable({
+                    pageLength: 10,
+                    responsive: true,
+                    ordering: false,
+                    destroy: true,
+                    dom: '<"html5buttons"B>lTfgitp',
+                    language: {
+                        "url": "https://cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+                    },
+                    buttons: [
+                        { extend: 'copy' },
+                        { extend: 'csv' },
+                        { extend: 'excel', title: 'ExampleFile' },
+                        { extend: 'pdf', title: 'ExampleFile' },
+
+                        {
+                            extend: 'print',
+                            customize: function (win) {
+                                $(win.document.body).addClass('white-bg');
+                                $(win.document.body).css('font-size', '10px');
+
+                                $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                            }
+                        }
+                    ],
+                    columns: [
+                        { "width": "2%" },
+                        { "width": "30%" },
+                        null,
+                        null,
+                        null,
+                        null,
+                        { "width": "5%" },
+                        { "width": "22%" }
+                    ]
+                });
+
+            }
+            catch (err) {
+                console.log(err);
+                $("#MsgBody").text(err);
+                $("#sistemMsg").modal('show');
+            }
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+
+                msg = "";
+
+                if (jqXHR.status === 0) {
+                    msg = 'Not connect: Verify Network.';
+                }
+                else if (jqXHR.status == 404) {
+                    msg = 'Requested page not found [404]';
+                }
+                else if (jqXHR.status == 500) {
+                    msg = 'Internal Server Error [500].';
+                }
+                else if (textStatus === 'parsererror') {
+                    msg = 'Requested JSON parse failed.';
+                }
+                else if (textStatus === 'timeout') {
+                    msg = 'Time out error.';
+                }
+                else if (textStatus === 'abort') {
+                    msg = 'Ajax request aborted.';
+                }
+                else {
+                    msg = 'Uncaught Error: ' + jqXHR.responseText;
+                }
+
+                $("#MsgBody").text(msg);
+                $("#sistemMsg").modal('show');
+            });
+    }
+
+    function CargarPropiedades() {
+        $.get("https://localhost:44303/api/Property/ListaPropiedades", function (data) {
+            try {
+                $.each(data.data, function (index, value) {
+                    $("#agregarPropiedad").append("<option value=\"" + value.id + "\">" + value.title + "</option>");
+                    $("#editarPropiedad").append("<option value=\"" + value.id + "\">" + value.title + "</option>");
+                });
+            }
+            catch (err) {
+                console.log(err);
+                $("#MsgBody").text(err);
+                $("#sistemMsg").modal('show');
+            }
+        })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+
+                msg = "";
+
+                if (jqXHR.status === 0) {
+                    msg = 'Not connect: Verify Network.';
+                }
+                else if (jqXHR.status == 404) {
+                    msg = 'Requested page not found [404]';
+                }
+                else if (jqXHR.status == 500) {
+                    msg = 'Internal Server Error [500].';
+                }
+                else if (textStatus === 'parsererror') {
+                    msg = 'Requested JSON parse failed.';
+                }
+                else if (textStatus === 'timeout') {
+                    msg = 'Time out error.';
+                }
+                else if (textStatus === 'abort') {
+                    msg = 'Ajax request aborted.';
+                }
+                else {
+                    msg = 'Uncaught Error: ' + jqXHR.responseText;
+                }
+
+                $("#MsgBody").text(msg);
+                $("#sistemMsg").modal('show');
+            });
+    }
+
+    function CancelarActividad(id) {
+
+        Objdata = {
+            actividad_id: id,
+        };
+
+        $.ajax({
+            type: "post",
+            url: "https://localhost:44303/api/Activity/PutCancelarActividad/" + Objdata.actividad_id,
+            data: Objdata,
+            dataType: 'json',
+            success: function (json) {
+                console.log(json);
+                switch (json.status) {
+                    case 400:
+                        $('#MsgBody').text(json.message);
+                        $('#sistemMsg').modal('show');
+                        break
+                    case 200:
+                    case 201:
+                        $('#MsgBody').text(json.message);
+                        $('#sistemMsg').modal('show');
+                        CargarDatosGrid();
+                        break;
+                    default:
+
+                        break;
+                }
+
+            },
+            complete: function (jqXHR, status) {
+                console.log(jqXHR);
+            },
+            error: function (jqXHR, status, error) {
+                console.log(jqXHR);
+                console.log(error);
+
+                $('#MsgBody').text(error);
+                $('#activityAgregar').modal('hide');
+                $('#sistemMsg').modal('show');
+            },
+        });
+    }
+
+    function CargarDatosSurvey(id) {
+        //var table = $('#tbSurvey').DataTable();
+
+        $.get("https://localhost:44303/api/Survey/ListaEncuestaActivity/" + id, function (data) {
+            //table.destroy();
+            $("#tbSurvey tbody").empty();
+
+            try {
+                $.each(data.data, function (index, value) {
+                    survey = "0";
+                    status = "";
+
+                    $("#tbSurvey tbody").append("<tr class=\"gradeX\"><td>" + value.id + "</td><td>" + value.answers + "</td></tr>");
+                });
+
+                console.log(data);
+                /*
+                $('#tbSurvey').DataTable({
+                    pageLength: 10,
+                    responsive: true,
+                    ordering: false,
+                    destroy: true,
+                    language: {
+                        "url": "https://cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+                    },
+                    columns: [
+                        { "width": "2%" },
+                        null
+                    ]
+                });*/
+
+                $('#surveyGrid').modal('show');
+            }
+            catch (err) {
+                console.log(err);
+                $("#MsgBody").text(err);
+                $("#sistemMsg").modal('show');
+            }
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+
+            msg = "";
+
+            if (jqXHR.status === 0) {
+                msg = 'Not connect: Verify Network.';
+            }
+            else if (jqXHR.status == 404) {
+                msg = 'Requested page not found [404]';
+            }
+            else if (jqXHR.status == 500) {
+                msg = 'Internal Server Error [500].';
+            }
+            else if (textStatus === 'parsererror') {
+                msg = 'Requested JSON parse failed.';
+            }
+            else if (textStatus === 'timeout') {
+                msg = 'Time out error.';
+            }
+            else if (textStatus === 'abort') {
+                msg = 'Ajax request aborted.';
+            }
+            else {
+                msg = 'Uncaught Error: ' + jqXHR.responseText;
+            }
+
+            $("#MsgBody").text(msg);
+            $("#sistemMsg").modal('show');
+        });
+
+    }
+
+
+
+  </script>
 </body>
 </html>

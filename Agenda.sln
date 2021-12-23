@@ -65,6 +65,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "angular", "angular\", "{A69
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "49810"
+		SlnRelativePath = "angular\"
 	EndProjectSection
 EndProject
 Global

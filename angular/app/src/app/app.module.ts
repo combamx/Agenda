@@ -3,14 +3,34 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { MatSidenavModule} from '@angular/material/sidenav';
+
+//Mis componentes
+import { HomeComponent } from './home/home.component';
+import { ActivityComponent } from './activity/activity.component';
+import { PropertyComponent } from './property/property.component';
+import { SurveyComponent } from './survey/survey.component';
+import { HttpClientModule } from '@angular/common/http';
+
+
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HomeComponent,
+    ActivityComponent,
+    PropertyComponent,
+    SurveyComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatSidenavModule,
+
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
