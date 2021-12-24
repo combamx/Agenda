@@ -1,4 +1,8 @@
 using Agenda.Models;
+using Agenda.Models.Helpers;
+using Agenda.Services;
+using Agenda.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -8,10 +12,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Agenda
@@ -39,6 +46,32 @@ namespace Agenda
             //});
 
             services.AddControllers();
+
+            // AppSetting Secreto Json
+            var appSettingSection = Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingSection);
+
+            // JWT Autentificacion Get Secreto
+            var appSettings = appSettingSection.Get<AppSettings>();
+            var llave = Encoding.ASCII.GetBytes(appSettings.Secreto);
+
+            services.AddAuthentication(d =>
+            {
+                d.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                d.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).
+            AddJwtBearer(d => {
+                d.RequireHttpsMetadata = false;
+                d.SaveToken = true;
+                d.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(llave),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Agenda", Version = "v1" });
@@ -49,6 +82,7 @@ namespace Agenda
             #region Se pasa la Cadena de Conexion del AppSetting al Context
             string sqlConnectionString = Configuration.GetConnectionString("agenda");
             services.AddScoped<agendaContext>(optionsBuilder => new agendaContext(sqlConnectionString));
+            services.AddScoped<IUserService, UserService>();
             #endregion
         }
 
@@ -65,6 +99,9 @@ namespace Agenda
             //app.UseCors(AgendaMiCros);
 
             app.UseCors("AllowAll");
+
+            //Autentificacion
+            app.UseAuthentication();
 
             app.UseHttpsRedirection();
 

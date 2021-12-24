@@ -69,7 +69,7 @@ namespace Agenda.Controllers
                 result.Status = 201;
                 result.Message = "";
                 result.Data = 1;
-                result.Parameters = JsonConvert.SerializeObject(surveyRequest); ;
+                result.Parameters = JsonConvert.SerializeObject(surveyRequest);
                 result.Function = "SurveyController.PostEncuesta";
             }
             catch (Exception err)
@@ -77,7 +77,7 @@ namespace Agenda.Controllers
                 result.Status = 500;
                 result.Message = err.Message;
                 result.Data = null;
-                result.Parameters = JsonConvert.SerializeObject(surveyRequest); ;
+                result.Parameters = JsonConvert.SerializeObject(surveyRequest);
                 result.Function = "SurveyController.PostEncuesta";
             }
 

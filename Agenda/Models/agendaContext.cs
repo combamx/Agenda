@@ -161,11 +161,21 @@ namespace Agenda.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.Contrasena)
+                    .HasMaxLength(500)
+                    .IsUnicode(false)
+                    .HasColumnName("contrasena");
+
                 entity.Property(e => e.Email)
                     .IsRequired()
                     .HasMaxLength(100)
                     .IsUnicode(false)
                     .HasColumnName("email");
+
+                entity.Property(e => e.Nombre)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("nombre");
             });
 
             OnModelCreatingPartial(modelBuilder);

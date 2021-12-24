@@ -1,6 +1,7 @@
 ﻿using Agenda.Models;
 using Agenda.Models.Request;
 using Agenda.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -13,6 +14,8 @@ namespace Agenda.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class ActivityController : ControllerBase
     {
         private readonly agendaContext _context;
