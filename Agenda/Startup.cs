@@ -29,10 +29,12 @@ namespace Agenda
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddCors(options => {
+            //services.AddCors(options =>
+            //{
             //    options.AddPolicy(name: AgendaMiCros, builder =>
             //    {
             //        builder.WithOrigins("*");
+            //        builder.WithHeaders("*");
             //    });
             //});
 
@@ -42,7 +44,7 @@ namespace Agenda
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Agenda", Version = "v1" });
             });
 
-            services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()));
+            services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin().AllowAnyHeader()));
 
             #region Se pasa la Cadena de Conexion del AppSetting al Context
             string sqlConnectionString = Configuration.GetConnectionString("agenda");

@@ -28,9 +28,9 @@
                       <i class="fa fa-table"></i> <span class="nav-label">Activity</span><span class="fa arrow"></span>
                   </a>
                   <ul class="nav nav-second-level">
-                      <li><a [routerLink]="['property']">Property</a></li>
-                      <li class="active"><a [routerLink]="['home']">Activity</a></li>
-                      <li><a [routerLink]="['survey']">Survey</a></li>
+                      <li><a [routerLink]="['/property']">Property</a></li>
+                      <li class="active"><a [routerLink]="['/activity']">Activity</a></li>
+                      <li><a [routerLink]="['/survey']">Survey</a></li>
                   </ul>
               </li>
           </ul>
@@ -65,7 +65,7 @@
               <h2>Activity List</h2>
               <ol class="breadcrumb">
                   <li class="breadcrumb-item">
-                      <a href="index.html">Home</a>
+                      <a [routerLink]="['/home']">Home</a>
                   </li>
                   <li class="breadcrumb-item">
                       <a>Tables</a>

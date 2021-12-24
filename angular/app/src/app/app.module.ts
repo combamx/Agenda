@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MatSidenavModule} from '@angular/material/sidenav';
+import { FormsModule } from '@angular/forms';
 
 //Mis componentes
 import { HomeComponent } from './home/home.component';
@@ -29,7 +30,7 @@ import { HttpClientModule } from '@angular/common/http';
     AppRoutingModule,
     BrowserAnimationsModule,
     MatSidenavModule,
-
+    FormsModule,
     HttpClientModule
   ],
   providers: [],
